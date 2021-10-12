@@ -16,6 +16,8 @@ void initClockGate() {
 
 /* INITIALISE PWM PINS*/
 void initPWM() {
+	//Enable Clock Gating for PORTB
+  SIM_SCGC5 |= SIM_SCGC5_PORTB_MASK;
 	// Configure Mode 3 for PWM pin operation
 	// TPM1_CH0
 	PORTB->PCR[LEFT_FW] &= ~PORT_PCR_MUX_MASK;
@@ -30,6 +32,9 @@ void initPWM() {
 	// TPM2_CH1
 	PORTB->PCR[RIGHT_BK] &= ~PORT_PCR_MUX_MASK;
 	PORTB->PCR[RIGHT_BK] |= PORT_PCR_MUX(3);
+	
+	// Enable Clock gating for Timer 1 and Timer 2
+	SIM->SCGC6 |= (SIM_SCGC6_TPM1_MASK | SIM_SCGC6_TPM2_MASK);
 	
 	//Select clock for TPM module
 	SIM->SOPT2 &= ~SIM_SOPT2_TPMSRC_MASK;
@@ -70,36 +75,36 @@ void initPWM() {
 void initUART2(uint32_t baud_rate){
 	uint32_t divisor, bus_clock;
     
-    // Enable clock for UART2 and Port E
-    SIM->SCGC4 |= SIM_SCGC4_UART2_MASK;
-    SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;
-    
-    // Enable UART2 receiver on Port 2 pin 23
-    PORTE->PCR[UART_RX_PORTE23] &= ~PORT_PCR_MUX_MASK;
-    PORTE->PCR[UART_RX_PORTE23] |= PORT_PCR_MUX(4);
-    
-    // Disable UART2 transmitter and receiver
-    UART2_C2 &= ~(UART_C2_RE_MASK);
-    
-    // Get default bus clock
-    bus_clock = DEFAULT_SYSTEM_CLOCK / 2;
-    
-    // Get division factor
-    divisor = bus_clock / (BAUD_RATE * 16);
-    
-    UART2->BDH = UART_BDH_SBR(divisor >> 8);
-    UART2->BDL = UART_BDL_SBR(divisor);
-    
-    UART2_C1 = 0;
-    UART2_S2 = 0;
-    UART2_C3 = 0;
-    
-    NVIC_SetPriority(UART2_IRQn, UART2_INT_PRIO);
-    NVIC_ClearPendingIRQ(UART2_IRQn);
-    NVIC_EnableIRQ(UART2_IRQn);
-    
-    UART2_C2 |= (UART_C2_RE_MASK);
-    UART2_C2 |= (UART_C2_RIE_MASK);
+	// Enable clock for UART2 and Port E
+	SIM->SCGC4 |= SIM_SCGC4_UART2_MASK;
+	SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;
+	
+	// Enable UART2 receiver on Port 2 pin 23
+	PORTE->PCR[UART_RX_PORTE23] &= ~PORT_PCR_MUX_MASK;
+	PORTE->PCR[UART_RX_PORTE23] |= PORT_PCR_MUX(4);
+	
+	// Disable UART2 transmitter and receiver
+	UART2_C2 &= ~(UART_C2_RE_MASK);
+	
+	// Get default bus clock
+	bus_clock = DEFAULT_SYSTEM_CLOCK / 2;
+	
+	// Get division factor
+	divisor = bus_clock / (BAUD_RATE * 16);
+	
+	UART2->BDH = UART_BDH_SBR(divisor >> 8);
+	UART2->BDL = UART_BDL_SBR(divisor);
+	
+	UART2_C1 = 0;
+	UART2_S2 = 0;
+	UART2_C3 = 0;
+	
+	NVIC_SetPriority(UART2_IRQn, UART2_INT_PRIO);
+	NVIC_ClearPendingIRQ(UART2_IRQn);
+	NVIC_EnableIRQ(UART2_IRQn);
+	
+	UART2_C2 |= (UART_C2_RE_MASK);
+	UART2_C2 |= (UART_C2_RIE_MASK);
 }
 
 /* LED GPIO Initialization Function */
@@ -135,7 +140,6 @@ void initLED(void) {
 }
 
 void initAudio() {
-
 	// Configure Mode 3 for PWM pin operation
 	PORTD->PCR[PTD0_Pin] &= ~PORT_PCR_MUX_MASK;
 	PORTD->PCR[PTD0_Pin] |= PORT_PCR_MUX(4);
@@ -159,3 +163,4 @@ void initAudio() {
 	TPM0_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
 	TPM0_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 }
+

@@ -18,11 +18,9 @@ volatile uint32_t rx_data = 0;
 /* Interupt for capturing serial data */
 void UART2_IRQHandler(void) {
     NVIC_ClearPendingIRQ(UART2_IRQn);
-    
     if (UART2->S1 & UART_S1_RDRF_MASK) {
         rx_data = UART2_D;
-    }
-    
+    }   
     //Clear INT Flag
     PORTE->ISFR |= MASK(UART_RX_PORTE23);
 }
@@ -97,15 +95,16 @@ int main (void) {
  
   // System Initialization
   SystemCoreClockUpdate();
+	initClockGate();
   initUART2(BAUD_RATE);
 	initPWM();
+	forward();
  
   //osKernelInitialize();                 // Initialize CMSIS-RTOS
   //osThreadNew(app_main, NULL, NULL);    // Create application main thread
   //osKernelStart();                      // Start thread execution
   //for (;;) {}
 	while(1) {
-		forward(state);
 	}
 	
 	

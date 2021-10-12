@@ -3,7 +3,7 @@
 #include "MKL25Z4.h"                    // Device header
 #include <math.h>
 
-#define MAX_DUTY_CYCLE 0x1D4C //7500 (50Hz)
+#define MAX_DUTY_CYCLE 7500 //(50Hz)
 
 typedef enum state {
 	FORWARD,
@@ -18,13 +18,13 @@ typedef enum state {
 } state_t;
 
 void stopMotors(void);
-void reverse(state_t);
-void forward(state_t);
-void right(state_t);
-void left(state_t);
-void leftforward(state_t);
-void leftreverse(state_t);
-void rightforward(state_t);
-void rightreverse(state_t);
+void reverse(void);
+void forward(void);
+void right(void);
+void left(void);
+void leftforward(void);
+void leftreverse(void);
+void rightforward(void);
+void rightreverse(void);
 
 #endif
