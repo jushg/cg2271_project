@@ -4,105 +4,109 @@
  
 #include "RTE_Components.h"
 #include  CMSIS_device_header
-#include "MKL25Z4.h"                    // Device header
 #include "cmsis_os2.h"
+#include "MKL25Z4.h"                    // Device header
+#include "init.h"
+#include "motor.h"
 
-#define RED_LED 18 // PortB Pin 18
-#define GREEN_LED 19 // PortB Pin 19
-#define BLUE_LED 1 // PortD Pin 1
-#define MASK(x) (1 << (x))
- 
-/*----------------------------------------------------------------------------
- * Application main thread
+
+volatile state_t state = FORWARD;
+
+// Received data from BT06 module
+volatile uint32_t rx_data = 0;
+
+/* Interupt for capturing serial data */
+void UART2_IRQHandler(void) {
+    NVIC_ClearPendingIRQ(UART2_IRQn);
+    
+    if (UART2->S1 & UART_S1_RDRF_MASK) {
+        rx_data = UART2_D;
+    }
+    
+    //Clear INT Flag
+    PORTE->ISFR |= MASK(UART_RX_PORTE23);
+}
+
+
+ /*----------------------------------------------------------------------------
+ * Application main threads
  *---------------------------------------------------------------------------*/
-typedef enum {
-  green,
-  red,
-  blue
-} color_t;
 
-void InitGPIO(void)
-{
-// Enable Clock to PORTB and PORTD
-SIM->SCGC5 |= ((SIM_SCGC5_PORTB_MASK) | (SIM_SCGC5_PORTD_MASK));
-// Configure MUX settings to make all 3 pins GPIO
-PORTB->PCR[RED_LED] &= ~PORT_PCR_MUX_MASK;
-PORTB->PCR[RED_LED] |= PORT_PCR_MUX(1);
-PORTB->PCR[GREEN_LED] &= ~PORT_PCR_MUX_MASK;
-PORTB->PCR[GREEN_LED] |= PORT_PCR_MUX(1);
-PORTD->PCR[BLUE_LED] &= ~PORT_PCR_MUX_MASK;
-PORTD->PCR[BLUE_LED] |= PORT_PCR_MUX(1);
-// Set Data Direction Registers for PortB and PortD
-PTB->PDDR |= (MASK(RED_LED) | MASK(GREEN_LED));
-PTD->PDDR |= MASK(BLUE_LED);
+/* Red LEDs thread */
+void tLed_red(void *argument) {    
+
 }
 
-static void delay(volatile uint32_t nof) {
-  while(nof!=0) {
-    __asm("NOP");
-    nof--;
-  }
+/* Green LEDs thread */
+void tLed_green(void *argument) {
+
 }
 
-void clearRGB(void) {
-  PTB->PDOR = (MASK(RED_LED) | MASK(GREEN_LED));
-  PTD->PDOR = MASK(BLUE_LED);
+/* Moving forward thread */
+void tMotor_Forward(void *argument) {
+
 }
 
-static void led_control(color_t color) {
-  clearRGB();
-  if(color == green) {
-    PTB->PDOR = ~MASK(GREEN_LED);
-    //PTD->PDOR = MASK(BLUE_LED);
-  } else if (color == red) {
-    PTB->PDOR = ~MASK(RED_LED);
-    //PTD->PDOR = MASK(BLUE_LED);
-  } else {
-    //PTB->PDOR = MASK(RED_LED) || MASK(GREEN_LED);
-    PTD->PDOR = ~MASK(BLUE_LED);
-  }
+/* Moving reverse thread */
+void tMotor_Reverse(void *argument) {
+
 }
 
-void led_red_thread (void *argument) {
+/* Turning left thread */
+void tMotor_Left(void *argument) {
+
+}
+
+/* Turning right thread */
+void tMotor_Right(void *argument) {
+
+}
+
+/* Stop movement thread */
+void tMotor_Stop(void *argument) {
+
+}
+
+/* Thread for decoding serial data and performing necessary actions */
+void tBrain(void *argument) {
+
+}
+
+/* Thread for playing sound when bluetooth connection is established */
+void tSound_opening(void *argument) {
+  
+}
+
+/* Thread for playing sound while the robot is in the challenge run */
+void tSound_running(void *argument) {
+   
+}
+
+/* Thread for playing sound when the robot finishes the challenge run */
+void tSound_ending(void *argument) {
+   
+}
+
+void app_main (void *argument) {
  
   // ...
-	color_t color = red;
-  for (;;) {
-		led_control (color);
-		//osDelay(1000);
-		delay(0x80000);
-		//led_control(color);
-		clearRGB();
-		//osDelay(1000);
-		delay(0x80000);
-	}
-}
-
-void led_green_thread (void *argument) {
- 
-  // ...
-	color_t color = green;
-  for (;;) {
-		led_control (color);
-		osDelay(1000);
-		//delay(0x80000); //
-		//led_control(color);
-		clearRGB();
-		osDelay(1000);//delay(0x80000); //
-	}
+  for (;;) {}
 }
  
 int main (void) {
  
   // System Initialization
   SystemCoreClockUpdate();
-	InitGPIO();
-	clearRGB();
-  // ...
+  initUART2(BAUD_RATE);
+	initPWM();
  
-  osKernelInitialize();                 // Initialize CMSIS-RTOS
-  osThreadNew(led_red_thread, NULL, NULL);    // Create application main thread
-  osThreadNew(led_green_thread, NULL, NULL);
-	osKernelStart();                      // Start thread execution
-  for (;;) {}
+  //osKernelInitialize();                 // Initialize CMSIS-RTOS
+  //osThreadNew(app_main, NULL, NULL);    // Create application main thread
+  //osKernelStart();                      // Start thread execution
+  //for (;;) {}
+	while(1) {
+		forward(state);
+	}
+	
+	
 }
