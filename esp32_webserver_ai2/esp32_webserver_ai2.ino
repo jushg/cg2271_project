@@ -98,42 +98,42 @@ void loop() {
   {
     response = "WiFi Connected: " + ip_address;
   }
-  if(req.indexOf("onRed") != -1)
-  {
-    digitalWrite(output26, HIGH);
-    response = "RED LED ON";
-    Serial2.write(0x31);
-  }
-  if(req.indexOf("offRed") != -1)
-  {
-    digitalWrite(output26, LOW);
-    response = "RED LED OFF";
-    Serial2.write(0x30);
-  }  
-  if(req.indexOf("onGreen") != -1)
-  {
-    digitalWrite(output26, HIGH);
-    response = "GREEN LED ON";
-    Serial2.write(0x33);
-  }
-  if(req.indexOf("offGreen") != -1)
-  {
-    digitalWrite(output26, LOW);
-    response = "GREEN LED OFF";
-    Serial2.write(0x32);
-  }
-  if(req.indexOf("onBlue") != -1)
-  {
-    digitalWrite(output26, HIGH);
-    response = "BLUE LED ON";
-    Serial2.write(0x35);
-  }
-  if(req.indexOf("offBlue") != -1)
-  {
-    digitalWrite(output26, LOW);
-    response = "BLUE LED OFF";
-    Serial2.write(0x34);
-  }
+//  if(req.indexOf("onRed") != -1)
+//  {
+//    digitalWrite(output26, HIGH);
+//    response = "RED LED ON";
+//    Serial2.write(0x31);
+//  }
+//  if(req.indexOf("offRed") != -1)
+//  {
+//    digitalWrite(output26, LOW);
+//    response = "RED LED OFF";
+//    Serial2.write(0x30);
+//  }  
+//  if(req.indexOf("onGreen") != -1)
+//  {
+//    digitalWrite(output26, HIGH);
+//    response = "GREEN LED ON";
+//    Serial2.write(0x33);
+//  }
+//  if(req.indexOf("offGreen") != -1)
+//  {
+//    digitalWrite(output26, LOW);
+//    response = "GREEN LED OFF";
+//    Serial2.write(0x32);
+//  }
+//  if(req.indexOf("onBlue") != -1)
+//  {
+//    digitalWrite(output26, HIGH);
+//    response = "BLUE LED ON";
+//    Serial2.write(0x35);
+//  }
+//  if(req.indexOf("offBlue") != -1)
+//  {
+//    digitalWrite(output26, LOW);
+//    response = "BLUE LED OFF";
+//    Serial2.write(0x34);
+//  }
   /*
        if (req.indexOf("on12") != -1) {digitalWrite(LED12, HIGH); estado = "LED12 ON";}
        if (req.indexOf("off12") != -1){digitalWrite(LED12, LOW); estado = "LED12 OFF";}
@@ -144,6 +144,61 @@ void loop() {
            if (digitalRead(LED12) == HIGH) {estado = "LED12 ON,";} else {estado = "LED12 OFF,";}
            if (digitalRead(LED14) == HIGH) {estado = estado + "LED14 ON";} else {estado = estado + "LED14 OFF";}
            }*/
+  // CAR COMMAND
+  if(req.indexOf("UP_BUTTON_PRESSED") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "UP_BUTTON_PRESSED";
+    Serial2.write(0x01);
+  }
+  if(req.indexOf("UP_BUTTON_RELEASED") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "UP_BUTTON_RELEASED";
+    Serial2.write(0x02);
+  }
+  if(req.indexOf("DOWN_BUTTON_PRESSED") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "DOWN_BUTTON_PRESSED";
+    Serial2.write(0x03);
+  }
+  if(req.indexOf("DOWN_BUTTON_RELEASED") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "DOWN_BUTTON_RELEASED";
+    Serial2.write(0x04);
+  }
+  if(req.indexOf("LEFT_BUTTON_PRESSED") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "LEFT_BUTTON_PRESSED";
+    Serial2.write(0x05);
+  }
+  if(req.indexOf("LEFT_BUTTON_RELEASED") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "LEFT_BUTTON_RELEASED";
+    Serial2.write(0x06);
+  }
+  if(req.indexOf("RIGHT_BUTTON_PRESSED") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "RIGHT_BUTTON_PRESSED";
+    Serial2.write(0x07);
+  }
+  if(req.indexOf("RIGHT_BUTTON_RELEASED") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "RIGHT_BUTTON_RELEASED";
+    Serial2.write(0x08);
+  }
+  if(req.indexOf("ALL_BUTTON_RELEASED") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "ALL_BUTTON_RELEASED";
+    Serial2.write(0x09);
+  }
            
 
   client.println("HTTP/1.1 200 OK");

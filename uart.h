@@ -23,7 +23,7 @@
 
 #define ALL_BUTTON_RELEASED         0x09
 
-#define FINISH_BUTTON_PRESSED       0x01
+#define FINISH_BUTTON_PRESSED       0x10 //Need to check this
 #define FINISH_BUTTON_PRESS_MASK(x) ((x & 0x20) >> 5)
 
 /* receive control command */

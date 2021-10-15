@@ -8,6 +8,7 @@
 #include "MKL25Z4.h"                    // Device header
 #include "init.h"
 #include "motor.h"
+#include "uart.h"
 
 
 volatile state_t state = FORWARD;
@@ -98,14 +99,26 @@ int main (void) {
 	initClockGate();
   initUART2(BAUD_RATE);
 	initPWM();
-	forward();
+	//forward();
+	reverse();
  
   //osKernelInitialize();                 // Initialize CMSIS-RTOS
   //osThreadNew(app_main, NULL, NULL);    // Create application main thread
   //osKernelStart();                      // Start thread execution
   //for (;;) {}
 	while(1) {
+		if(rx_data == UP_BUTTON_PRESSED ) {
+			forward();
+		}
+		else if(rx_data == DOWN_BUTTON_PRESSED) {
+			reverse();
+		}
+		else if(rx_data == LEFT_BUTTON_PRESSED) {
+			left();
+		}
+		else if(rx_data == RIGHT_BUTTON_PRESSED) {
+			right();
+		}
+		else { stopMotors();}
 	}
-	
-	
 }
