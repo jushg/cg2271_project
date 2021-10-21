@@ -5,8 +5,8 @@
 #define TXD2 17
 
 // Replace with your network credentials
-const char* ssid = "Free WiFi";
-const char* password = "12345678";
+const char* ssid = "TTDT"; //"Free WiFi";
+const char* password = "dadianhcho"; //"12345678";
 
 // Set web server port number to 80
 WiFiServer server(80);
@@ -29,7 +29,7 @@ const long timeoutTime = 2000;
 int wait30 = 30000; // time to reconnect when connection is lost.
 
 // This is your Static IP
-IPAddress local_IP(192, 168, 120, 120); 
+IPAddress local_IP(192, 168, 43, 120); 
 // Gateway IP address
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 0, 0);
@@ -44,11 +44,11 @@ void setup() {
   // Set outputs to LOW
   digitalWrite(output26, LOW);
 
-  //Configure Static IP
-//  if(!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS))
-//  {
-//    Serial.println("Static IP failed to configure");
-//  }
+//  Configure Static IP
+  if(!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS))
+  {
+    Serial.println("Static IP failed to configure");
+  }
 
   // Connect to Wi-Fi network with SSID and password
   Serial.print("Connecting to ");

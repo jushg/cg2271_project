@@ -13,7 +13,13 @@
 .\objects\main.o: init.h
 .\objects\main.o: F:\RTOS\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h
 .\objects\main.o: F:\RTOS\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\main.o: led.h
+.\objects\main.o: F:\RTOS\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h
 .\objects\main.o: motor.h
 .\objects\main.o: F:\RTOS\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h
 .\objects\main.o: uart.h
+.\objects\main.o: F:\RTOS\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h
+.\objects\main.o: audio.h
+.\objects\main.o: F:\RTOS\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h
+.\objects\main.o: led.h
 .\objects\main.o: F:\RTOS\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h

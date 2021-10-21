@@ -9,6 +9,8 @@
 #include "init.h"
 #include "motor.h"
 #include "uart.h"
+#include "audio.h"
+#include "led.h"
 
 
 volatile state_t state = FORWARD;
@@ -41,72 +43,9 @@ void tLed_green(void *argument) {
 
 }
 
-/* Moving forward thread */
-void tMotor_Forward(void *argument) {
-
-}
-
-/* Moving reverse thread */
-void tMotor_Reverse(void *argument) {
-
-}
-
-/* Turning left thread */
-void tMotor_Left(void *argument) {
-
-}
-
-/* Turning right thread */
-void tMotor_Right(void *argument) {
-
-}
-
-/* Stop movement thread */
-void tMotor_Stop(void *argument) {
-
-}
-
-/* Thread for decoding serial data and performing necessary actions */
-void tBrain(void *argument) {
-
-}
-
-/* Thread for playing sound when bluetooth connection is established */
-void tSound_opening(void *argument) {
-  
-}
-
-/* Thread for playing sound while the robot is in the challenge run */
-void tSound_running(void *argument) {
-   
-}
-
-/* Thread for playing sound when the robot finishes the challenge run */
-void tSound_ending(void *argument) {
-   
-}
-
-void app_main (void *argument) {
- 
-  // ...
-  for (;;) {}
-}
- 
-int main (void) {
- 
-  // System Initialization
-  SystemCoreClockUpdate();
-	initClockGate();
-  initUART2(BAUD_RATE);
-	initPWM();
-	//forward();
-	reverse();
- 
-  //osKernelInitialize();                 // Initialize CMSIS-RTOS
-  //osThreadNew(app_main, NULL, NULL);    // Create application main thread
-  //osKernelStart();                      // Start thread execution
-  //for (;;) {}
-	while(1) {
+/* Motor thread */
+void tMotor(void *argument) {
+	for(;;) {
 		if(rx_data == UP_BUTTON_PRESSED ) {
 			forward();
 		}
@@ -121,4 +60,61 @@ int main (void) {
 		}
 		else { stopMotors();}
 	}
+}
+
+
+/* Thread for decoding serial data and performing necessary actions */
+void tBrain(void *argument) {
+
+}
+
+/* Thread for playing sound when bluetooth connection is established */
+void tSound_opening(void *argument) {
+	for(;;) {
+		
+	}
+}
+
+/* Thread for playing sound while the robot is in the challenge run */
+void tSound_running(void *argument) {
+   for(;;) {
+		int melody_len = sizeof(underworld_melody)/sizeof(int);
+		sing(underworld_melody, underworld_tempo, melody_len, 0x00004);
+	}
+}
+
+/* Thread for playing sound when the robot finishes the challenge run */
+void tSound_ending(void *argument) {
+   for(;;) {
+		
+	}
+}
+
+
+ 
+int main (void) {
+ 
+  // System Initialization
+  SystemCoreClockUpdate();
+	initClockGate();
+  initUART2(BAUD_RATE);
+	initPWM();
+	initAudio();
+	initLED();
+	
+	forward();
+	//reverse();
+ 
+  osKernelInitialize();                 // Initialize CMSIS-RTOS
+	//osThreadNew(tMotor,NULL,NULL);
+	//osThreadNew(tBrain,NULL,NULL);
+	//osThreadNew(tSound_ending,NULL,NULL);
+	//osThreadNew(tSound_opening,NULL,NULL);
+	osThreadNew(tSound_running,NULL,NULL);
+	//osThreadNew(tLed_green,NULL,NULL);
+	//osThreadNew(tLed_red,NULL,NULL);
+  osKernelStart();                      // Start thread execution
+  for (;;) {}
+
+	
 }
