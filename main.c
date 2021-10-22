@@ -58,7 +58,7 @@ void tMotor(void *argument) {
 		else if(rx_data == RIGHT_BUTTON_PRESSED) {
 			right();
 		}
-		else { stopMotors();}
+		else if (rx_data == ALL_BUTTON_RELEASED) { stopMotors();}
 	}
 }
 
@@ -102,15 +102,15 @@ int main (void) {
 	initAudio();
 	initLED();
 	
-	forward();
+	//forward();
 	//reverse();
  
   osKernelInitialize();                 // Initialize CMSIS-RTOS
-	//osThreadNew(tMotor,NULL,NULL);
+	osThreadNew(tMotor,NULL,NULL);
 	//osThreadNew(tBrain,NULL,NULL);
 	//osThreadNew(tSound_ending,NULL,NULL);
 	//osThreadNew(tSound_opening,NULL,NULL);
-	osThreadNew(tSound_running,NULL,NULL);
+	//osThreadNew(tSound_running,NULL,NULL);
 	//osThreadNew(tLed_green,NULL,NULL);
 	//osThreadNew(tLed_red,NULL,NULL);
   osKernelStart();                      // Start thread execution

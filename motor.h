@@ -5,6 +5,8 @@
 
 #define MAX_DUTY_CYCLE 7500 //(50Hz)
 
+#define STRAIGHT_SPEED 0.7
+
 typedef enum state {
 	FORWARD,
 	REVERSE,
