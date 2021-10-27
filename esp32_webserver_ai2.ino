@@ -175,6 +175,24 @@ void loop() {
     response = "STOP";
     Serial2.write(0x05);
   }
+  if(req.indexOf("start") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "START";
+    Serial2.write(0x06);
+  }
+  if(req.indexOf("end") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "END";
+    Serial2.write(0x07);
+  }
+  if(req.indexOf("auto") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "AUTO";
+    Serial2.write(0x08);
+  }
            
 
   client.println("HTTP/1.1 200 OK");
