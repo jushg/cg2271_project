@@ -13,9 +13,9 @@
 #include "led.h"
 
 
-volatile state_t state = FORWARD;
+volatile state_t state = START;
 
-// Received data from BT06 module
+// Received data from ESP32
 volatile uint32_t rx_data = 0;
 
 /* Interupt for capturing serial data */
@@ -35,12 +35,35 @@ void UART2_IRQHandler(void) {
 
 /* Red LEDs thread */
 void tLed_red(void *argument) {    
-
+	for(;;) {
+		if(state == STOP || state == START || state == FINISH) {
+			allRedLightUp();
+			osDelay(250);
+			offRedLEDs();
+			osDelay(250);
+		}
+		else {
+			allRedLightUp();
+			osDelay(500);
+			offRedLEDs();
+			osDelay(500);
+		}
+	}
 }
 
 /* Green LEDs thread */
 void tLed_green(void *argument) {
-
+	for(;;) {
+		if(state == STOP || state == START || state == FINISH) {
+			allGreenLightUp();
+		}
+		else {
+			for(int i = 0; i < 8; ++i) {
+				toggleGreenLED(i);
+				osDelay(100);
+			}
+		}
+	}
 }
 
 /* Motor thread */
@@ -48,17 +71,45 @@ void tMotor(void *argument) {
 	for(;;) {
 		if(rx_data == UP_BUTTON_PRESSED ) {
 			forward();
+			state = FORWARD;
 		}
 		else if(rx_data == DOWN_BUTTON_PRESSED) {
 			reverse();
+			state = REVERSE;
 		}
 		else if(rx_data == LEFT_BUTTON_PRESSED) {
 			left();
+			state = LEFT;
 		}
 		else if(rx_data == RIGHT_BUTTON_PRESSED) {
 			right();
+			state = RIGHT;
 		}
-		else if (rx_data == ALL_BUTTON_RELEASED) { stopMotors();}
+		else if(rx_data == RIGHT_FORWARD_BUTTON_PRESSED) {
+			rightforward();
+			state = FORWARD;
+		}
+		else if(rx_data == RIGHT_REVERSE_BUTTON_PRESSED) {
+			rightreverse();
+			state = REVERSE;
+		}
+		else if(rx_data == LEFT_FORWARD_BUTTON_PRESSED) {
+			leftforward();
+			state = FORWARD;
+		}
+		else if(rx_data == LEFT_REVERSE_BUTTON_PRESSED) {
+			leftreverse();
+			state = REVERSE;
+		}
+		else if (rx_data == ALL_BUTTON_RELEASED) { 
+			stopMotors();
+			state = STOP;
+		}
+		else if (rx_data == FINISH_BUTTON_PRESSED) 
+		{
+			stopMotors();
+			state = FINISH;
+		}
 	}
 }
 
@@ -77,8 +128,8 @@ void tSound_opening(void *argument) {
 
 /* Thread for playing sound while the robot is in the challenge run */
 void tSound_running(void *argument) {
+	int melody_len = sizeof(underworld_melody)/sizeof(int);
    for(;;) {
-		int melody_len = sizeof(underworld_melody)/sizeof(int);
 		sing(underworld_melody, underworld_tempo, melody_len, 0x00004);
 	}
 }
@@ -102,19 +153,18 @@ int main (void) {
 	initAudio();
 	initLED();
 	
-	//forward();
-	//reverse();
- 
+	offGreenLEDs();
+	offRedLEDs();
+	
+
   osKernelInitialize();                 // Initialize CMSIS-RTOS
 	osThreadNew(tMotor,NULL,NULL);
 	//osThreadNew(tBrain,NULL,NULL);
 	//osThreadNew(tSound_ending,NULL,NULL);
 	//osThreadNew(tSound_opening,NULL,NULL);
 	//osThreadNew(tSound_running,NULL,NULL);
-	//osThreadNew(tLed_green,NULL,NULL);
-	//osThreadNew(tLed_red,NULL,NULL);
+	osThreadNew(tLed_green,NULL,NULL);
+	osThreadNew(tLed_red,NULL,NULL);
   osKernelStart();                      // Start thread execution
   for (;;) {}
-
-	
 }

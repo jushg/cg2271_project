@@ -5,8 +5,8 @@
 #define TXD2 17
 
 // Replace with your network credentials
-const char* ssid = "TTDT"; //"Free WiFi";
-const char* password = "dadianhcho"; //"12345678";
+const char* ssid = "TTDT";
+const char* password = "dadianhcho";
 
 // Set web server port number to 80
 WiFiServer server(80);
@@ -29,7 +29,7 @@ const long timeoutTime = 2000;
 int wait30 = 30000; // time to reconnect when connection is lost.
 
 // This is your Static IP
-IPAddress local_IP(192, 168, 43, 120); 
+IPAddress local_IP(192, 168, 43, 214); 
 // Gateway IP address
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 0, 0);
@@ -44,11 +44,11 @@ void setup() {
   // Set outputs to LOW
   digitalWrite(output26, LOW);
 
-//  Configure Static IP
-  if(!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS))
-  {
-    Serial.println("Static IP failed to configure");
-  }
+  //Configure Static IP
+//  if(!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS))
+//  {
+//    Serial.println("Static IP failed to configure");
+//  }
 
   // Connect to Wi-Fi network with SSID and password
   Serial.print("Connecting to ");
@@ -58,6 +58,7 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
+  Serial2.write(0x16); //Send the status that the Wifi has been connected
   // Print local IP address and start web server
   Serial.println("");
   Serial.println("WiFi connected.");
@@ -145,59 +146,53 @@ void loop() {
            if (digitalRead(LED14) == HIGH) {estado = estado + "LED14 ON";} else {estado = estado + "LED14 OFF";}
            }*/
   // CAR COMMAND
-  if(req.indexOf("UP_BUTTON_PRESSED") != -1)
+  if(req.indexOf("moveForward") != -1)
   {
     digitalWrite(output26, HIGH);
-    response = "UP_BUTTON_PRESSED";
+    response = "MOVE FORWARD";
     Serial2.write(0x01);
   }
-  if(req.indexOf("UP_BUTTON_RELEASED") != -1)
+  if(req.indexOf("moveBackward") != -1)
   {
     digitalWrite(output26, HIGH);
-    response = "UP_BUTTON_RELEASED";
+    response = "MOVE BACKWARD";
     Serial2.write(0x02);
   }
-  if(req.indexOf("DOWN_BUTTON_PRESSED") != -1)
+  if(req.indexOf("moveLeft") != -1)
   {
     digitalWrite(output26, HIGH);
-    response = "DOWN_BUTTON_PRESSED";
+    response = "MOVE LEFT";
     Serial2.write(0x03);
   }
-  if(req.indexOf("DOWN_BUTTON_RELEASED") != -1)
+  if(req.indexOf("moveRight") != -1)
   {
     digitalWrite(output26, HIGH);
-    response = "DOWN_BUTTON_RELEASED";
+    response = "MOVE RIGHT";
     Serial2.write(0x04);
   }
-  if(req.indexOf("LEFT_BUTTON_PRESSED") != -1)
+  if(req.indexOf("stop") != -1)
   {
-    digitalWrite(output26, HIGH);
-    response = "LEFT_BUTTON_PRESSED";
+    digitalWrite(output26, LOW);
+    response = "STOP";
     Serial2.write(0x05);
   }
-  if(req.indexOf("LEFT_BUTTON_RELEASED") != -1)
+  if(req.indexOf("start") != -1)
   {
     digitalWrite(output26, HIGH);
-    response = "LEFT_BUTTON_RELEASED";
+    response = "START";
     Serial2.write(0x06);
   }
-  if(req.indexOf("RIGHT_BUTTON_PRESSED") != -1)
+  if(req.indexOf("end") != -1)
   {
     digitalWrite(output26, HIGH);
-    response = "RIGHT_BUTTON_PRESSED";
+    response = "END";
     Serial2.write(0x07);
   }
-  if(req.indexOf("RIGHT_BUTTON_RELEASED") != -1)
+  if(req.indexOf("auto") != -1)
   {
     digitalWrite(output26, HIGH);
-    response = "RIGHT_BUTTON_RELEASED";
+    response = "AUTO";
     Serial2.write(0x08);
-  }
-  if(req.indexOf("ALL_BUTTON_RELEASED") != -1)
-  {
-    digitalWrite(output26, HIGH);
-    response = "ALL_BUTTON_RELEASED";
-    Serial2.write(0x09);
   }
            
 

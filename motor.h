@@ -5,18 +5,16 @@
 
 #define MAX_DUTY_CYCLE 7500 //(50Hz)
 
-#define STRAIGHT_SPEED 0.7
+#define STRAIGHT_SPEED 0.65
 
 typedef enum state {
 	FORWARD,
 	REVERSE,
 	RIGHT,
 	LEFT,
-	FWLEFT,
-	RVLEFT,
-	FWRIGHT,
-	RVRIGHT,
-	STOP
+	STOP,
+	START,
+	FINISH
 } state_t;
 
 void stopMotors(void);

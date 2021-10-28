@@ -21,6 +21,11 @@
 #define RIGHT_BUTTON_PRESSED        0x04
 //#define RIGHT_BUTTON_RELEASED       0x08
 
+#define RIGHT_FORWARD_BUTTON_PRESSED        0x05
+#define RIGHT_REVERSE_BUTTON_PRESSED        0x06
+#define LEFT_FORWARD_BUTTON_PRESSED         0x07
+#define LEFT_REVERSE_BUTTON_PRESSED         0x08
+
 #define ALL_BUTTON_RELEASED         0x05
 
 #define FINISH_BUTTON_PRESSED       0x10 //Need to check this

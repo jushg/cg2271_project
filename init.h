@@ -44,8 +44,6 @@
 
 #define PTD0_Pin 0
 #define PTD1_Pin 1
-
-
 #define DUTY_CYCLE_AUDIO 0.8
 
 // MISCELLANEOUS MACROS
