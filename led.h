@@ -1,4 +1,5 @@
 #include "MKL25Z4.h"
+#include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 
 #define SW_POS 6
 #define GREEN_LED_01 7 // PortC Pin 7
@@ -22,3 +23,7 @@ void allRedLightUp(void);
 void offRedLEDs(void);
 
 void toggleGreenLED(int greenLEDCounter);
+
+void flashRedLEDs (int time);
+	
+void flashGreenLEDs(int time);

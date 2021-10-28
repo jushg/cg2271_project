@@ -58,7 +58,6 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-  Serial2.write(0x16); //Send the status that the Wifi has been connected
   // Print local IP address and start web server
   Serial.println("");
   Serial.println("WiFi connected.");
@@ -66,6 +65,7 @@ void setup() {
   ip_address = WiFi.localIP().toString();
   Serial.println(ip_address);
   server.begin();
+  Serial2.write(0x00); //Send the status that the Wifi has been connected
 }
 
 void loop() {
@@ -99,42 +99,7 @@ void loop() {
   {
     response = "WiFi Connected: " + ip_address;
   }
-//  if(req.indexOf("onRed") != -1)
-//  {
-//    digitalWrite(output26, HIGH);
-//    response = "RED LED ON";
-//    Serial2.write(0x31);
-//  }
-//  if(req.indexOf("offRed") != -1)
-//  {
-//    digitalWrite(output26, LOW);
-//    response = "RED LED OFF";
-//    Serial2.write(0x30);
-//  }  
-//  if(req.indexOf("onGreen") != -1)
-//  {
-//    digitalWrite(output26, HIGH);
-//    response = "GREEN LED ON";
-//    Serial2.write(0x33);
-//  }
-//  if(req.indexOf("offGreen") != -1)
-//  {
-//    digitalWrite(output26, LOW);
-//    response = "GREEN LED OFF";
-//    Serial2.write(0x32);
-//  }
-//  if(req.indexOf("onBlue") != -1)
-//  {
-//    digitalWrite(output26, HIGH);
-//    response = "BLUE LED ON";
-//    Serial2.write(0x35);
-//  }
-//  if(req.indexOf("offBlue") != -1)
-//  {
-//    digitalWrite(output26, LOW);
-//    response = "BLUE LED OFF";
-//    Serial2.write(0x34);
-//  }
+
   /*
        if (req.indexOf("on12") != -1) {digitalWrite(LED12, HIGH); estado = "LED12 ON";}
        if (req.indexOf("off12") != -1){digitalWrite(LED12, LOW); estado = "LED12 OFF";}
@@ -174,7 +139,7 @@ void loop() {
   {
     digitalWrite(output26, LOW);
     response = "STOP";
-    Serial2.write(0x05);
+    Serial2.write(0x09);
   }
   if(req.indexOf("start") != -1)
   {
@@ -186,13 +151,13 @@ void loop() {
   {
     digitalWrite(output26, HIGH);
     response = "END";
-    Serial2.write(0x07);
+    Serial2.write(0xFF);
   }
   if(req.indexOf("auto") != -1)
   {
     digitalWrite(output26, HIGH);
     response = "AUTO";
-    Serial2.write(0x08);
+    Serial2.write(0x10);
   }
            
 

@@ -9,6 +9,20 @@ void allGreenLightUp() {
 		PTC->PDOR = (MASK(GREEN_LED_01) | MASK(GREEN_LED_02) | MASK(GREEN_LED_03) | MASK(GREEN_LED_04) | MASK(GREEN_LED_05) | MASK(GREEN_LED_06) | MASK(GREEN_LED_07) | MASK(GREEN_LED_08));
 }
 
+void flashGreenLEDs(int time){
+		allGreenLightUp();
+		osDelay(time);
+		offGreenLEDs();
+		osDelay(time);
+}
+
+void flashRedLEDs(int time){
+		allRedLightUp();
+		osDelay(time);
+		offRedLEDs();
+		osDelay(time);
+}
+
 void allRedLightUp() {
 		PTA->PDOR = MASK(RED_LED_01);
 }

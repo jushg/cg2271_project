@@ -12,22 +12,9 @@
 #include "audio.h"
 #include "led.h"
 
+osEventFlagsId_t ledFlag;
 
 volatile state_t state = START;
-
-// Received data from ESP32
-volatile uint32_t rx_data = 0;
-
-/* Interupt for capturing serial data */
-void UART2_IRQHandler(void) {
-    NVIC_ClearPendingIRQ(UART2_IRQn);
-    if (UART2->S1 & UART_S1_RDRF_MASK) {
-        rx_data = UART2_D;
-    }   
-    //Clear INT Flag
-    PORTE->ISFR |= MASK(UART_RX_PORTE23);
-}
-
 
  /*----------------------------------------------------------------------------
  * Application main threads
@@ -35,25 +22,21 @@ void UART2_IRQHandler(void) {
 
 /* Red LEDs thread */
 void tLed_red(void *argument) {    
-	for(;;) {
+	while(1) {
+		osEventFlagsWait(ledFlag, 0x00001, osFlagsNoClear, osWaitForever);
 		if(state == STOP || state == START || state == FINISH) {
-			allRedLightUp();
-			osDelay(250);
-			offRedLEDs();
-			osDelay(250);
+			flashRedLEDs(250);
 		}
 		else {
-			allRedLightUp();
-			osDelay(500);
-			offRedLEDs();
-			osDelay(500);
+			flashRedLEDs(500);
 		}
 	}
 }
 
 /* Green LEDs thread */
 void tLed_green(void *argument) {
-	for(;;) {
+	while(1) {
+		osEventFlagsWait(ledFlag, 0x00001, osFlagsNoClear, osWaitForever);
 		if(state == STOP || state == START || state == FINISH) {
 			allGreenLightUp();
 		}
@@ -68,45 +51,48 @@ void tLed_green(void *argument) {
 
 /* Motor thread */
 void tMotor(void *argument) {
-	for(;;) {
-		if(rx_data == UP_BUTTON_PRESSED ) {
+	uint8_t data;
+	while(1) {
+		osEventFlagsWait(motorFlag, 0x00001, osFlagsNoClear, osWaitForever);
+		data = rxData;
+		//osMessageQueueGet(motorMsg, &data, NULL, osWaitForever);
+		if(data == UP_BUTTON_PRESSED ) {
 			forward();
 			state = FORWARD;
 		}
-		else if(rx_data == DOWN_BUTTON_PRESSED) {
+		else if(data == DOWN_BUTTON_PRESSED) {
 			reverse();
 			state = REVERSE;
 		}
-		else if(rx_data == LEFT_BUTTON_PRESSED) {
+		else if(data == LEFT_BUTTON_PRESSED) {
 			left();
 			state = LEFT;
 		}
-		else if(rx_data == RIGHT_BUTTON_PRESSED) {
+		else if(data == RIGHT_BUTTON_PRESSED) {
 			right();
 			state = RIGHT;
 		}
-		else if(rx_data == RIGHT_FORWARD_BUTTON_PRESSED) {
+		else if(data == RIGHT_FORWARD_BUTTON_PRESSED) {
 			rightforward();
 			state = FORWARD;
 		}
-		else if(rx_data == RIGHT_REVERSE_BUTTON_PRESSED) {
+		else if(data == RIGHT_REVERSE_BUTTON_PRESSED) {
 			rightreverse();
 			state = REVERSE;
 		}
-		else if(rx_data == LEFT_FORWARD_BUTTON_PRESSED) {
+		else if(data == LEFT_FORWARD_BUTTON_PRESSED) {
 			leftforward();
 			state = FORWARD;
 		}
-		else if(rx_data == LEFT_REVERSE_BUTTON_PRESSED) {
+		else if(data == LEFT_REVERSE_BUTTON_PRESSED) {
 			leftreverse();
 			state = REVERSE;
 		}
-		else if (rx_data == ALL_BUTTON_RELEASED) { 
+		else if (data == ALL_BUTTON_RELEASED) { 
 			stopMotors();
 			state = STOP;
 		}
-		else if (rx_data == FINISH_BUTTON_PRESSED) 
-		{
+		else if (data == THE_END) {
 			stopMotors();
 			state = FINISH;
 		}
@@ -116,28 +102,72 @@ void tMotor(void *argument) {
 
 /* Thread for decoding serial data and performing necessary actions */
 void tBrain(void *argument) {
+	//uint8_t rxData;
+	while(1) {
+		//osMessageQueueGet(uartMsg, &rxData, NULL, osWaitForever);
+		if (rxData == CONNECT) {	
+			osEventFlagsSet(audioFlag, 0x00001);	 //Play connected tunes	
+			//Flash 2 times
+			flashGreenLEDs(250);
+			flashGreenLEDs(250);
+			osEventFlagsSet(ledFlag, 0x00001);
+			//osEventFlagsSet(audioFlag, 0x00002);
+			osEventFlagsSet(motorFlag, 0x00001);
+			rxData = UNIDENTIFIED;
+		}
+		else if (rxData <= 9) {
+			osEventFlagsClear(motorFlag, 0x00002);	
+			osEventFlagsSet(motorFlag, 0x00001);
+			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
+		}
+		else if (rxData == AUTO) {
+			osEventFlagsClear(motorFlag, 0x00001);	
+			osEventFlagsSet(motorFlag, 0x00002);
+			osEventFlagsSet(audioFlag, 0x00002);
+			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
+		}
+		else if (rxData == THE_END) {
+			stopMotors();
+			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
+			osEventFlagsClear(audioFlag, 0x00007);	
+			osEventFlagsSet(audioFlag, 0x00003);
+		}
+	}
 
 }
 
-/* Thread for playing sound when bluetooth connection is established */
+/* Thread for playing sound when wifi connection is established */
 void tSound_opening(void *argument) {
-	for(;;) {
-		
+	int melody_len = sizeof(connected_melody)/sizeof(int);
+	while(1) {
+		osEventFlagsWait(audioFlag, 0x00001, osFlagsNoClear, osWaitForever);
+		sing(connected_melody, connected_tempo, melody_len, 0x00001);
+		osEventFlagsClear(audioFlag, 0x00001);	
 	}
 }
 
 /* Thread for playing sound while the robot is in the challenge run */
 void tSound_running(void *argument) {
 	int melody_len = sizeof(underworld_melody)/sizeof(int);
-   for(;;) {
-		sing(underworld_melody, underworld_tempo, melody_len, 0x00004);
+   while(1) {
+		osEventFlagsWait(audioFlag, 0x00002, osFlagsNoClear, osWaitForever);
+		sing(underworld_melody, underworld_tempo, melody_len, 0x00002);
 	}
 }
 
 /* Thread for playing sound when the robot finishes the challenge run */
 void tSound_ending(void *argument) {
-   for(;;) {
-		
+	int melody_len = sizeof(gurenge)/sizeof(int);
+  while(1) {
+		osEventFlagsWait(audioFlag, 0x00003, osFlagsNoClear, osWaitForever);
+		sing(gurenge, gurenge_tempo, melody_len, 0x00003);
+		osEventFlagsClear(audioFlag, 0x00003);	
+	}
+}
+
+void tAuto_driving(void *argument) {
+  while(1) {
+		osEventFlagsWait(motorFlag, 0x00002, osFlagsNoClear, osWaitForever);
 	}
 }
 
@@ -155,16 +185,21 @@ int main (void) {
 	
 	offGreenLEDs();
 	offRedLEDs();
-	
+	stopMotors();
 
   osKernelInitialize();                 // Initialize CMSIS-RTOS
+	motorFlag = osEventFlagsNew(NULL);
+	audioFlag = osEventFlagsNew(NULL);
+	ledFlag = osEventFlagsNew(NULL);
+	
 	osThreadNew(tMotor,NULL,NULL);
-	//osThreadNew(tBrain,NULL,NULL);
-	//osThreadNew(tSound_ending,NULL,NULL);
-	//osThreadNew(tSound_opening,NULL,NULL);
-	//osThreadNew(tSound_running,NULL,NULL);
+	osThreadNew(tBrain,NULL,NULL);
+	osThreadNew(tSound_ending,NULL,NULL);
+	osThreadNew(tSound_opening,NULL,NULL);
+	osThreadNew(tSound_running,NULL,NULL);
 	osThreadNew(tLed_green,NULL,NULL);
 	osThreadNew(tLed_red,NULL,NULL);
+	osThreadNew(tAuto_driving,NULL,NULL);
   osKernelStart();                      // Start thread execution
   for (;;) {}
 }
