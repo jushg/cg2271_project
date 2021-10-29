@@ -18,6 +18,14 @@
 #define RIGHT_FW 2 // PTB2 TPM2_CH0
 #define RIGHT_BK 3 // PTB3 TPM2_CH1
 
+//define Motors 2
+/*
+#define LEFT_FW 1 // PTB0 TPM1_CH0
+#define LEFT_BK 3 // PTB1 TPM1_CH1
+#define RIGHT_FW 2 // PTB2 TPM2_CH0
+#define RIGHT_BK 0 // PTB3 TPM2_CH1
+*/
+
 #define UART_RX_PORTE23 23 //PTE 23 RX
 #define BAUD_RATE 9600
 #define UART2_INT_PRIO 128	
@@ -31,7 +39,9 @@
 
 
 // ULTRASONIC
-
+#define PTB1_Pin 1
+#define PTB2_Pin 2
+#define PTB3_Pin 3
 
 // MISCELLANEOUS MACROS
 
@@ -47,4 +57,7 @@ void initPWM(void);
 void initUART2(uint32_t);
 void initLED(void);
 void initAudio(void);
+void initUltrasonic(void);
+void initMotor(void);
+
 #endif

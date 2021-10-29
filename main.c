@@ -106,13 +106,15 @@ void tBrain(void *argument) {
 	while(1) {
 		//osMessageQueueGet(uartMsg, &rxData, NULL, osWaitForever);
 		if (rxData == CONNECT) {	
+			//when the ESP restarts
+			osEventFlagsClear(ledFlag, 0x00001);
+			osEventFlagsClear(audioFlag, 0x00007);	
 			osEventFlagsSet(audioFlag, 0x00001);	 //Play connected tunes	
 			//Flash 2 times
 			flashGreenLEDs(250);
 			flashGreenLEDs(250);
 			osEventFlagsSet(ledFlag, 0x00001);
 			//osEventFlagsSet(audioFlag, 0x00002);
-			osEventFlagsSet(motorFlag, 0x00001);
 			rxData = UNIDENTIFIED;
 		}
 		else if (rxData <= 9) {
@@ -130,7 +132,7 @@ void tBrain(void *argument) {
 			stopMotors();
 			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
 			osEventFlagsClear(audioFlag, 0x00007);	
-			osEventFlagsSet(audioFlag, 0x00003);
+			osEventFlagsSet(audioFlag, 0x00004);
 		}
 	}
 
@@ -159,9 +161,9 @@ void tSound_running(void *argument) {
 void tSound_ending(void *argument) {
 	int melody_len = sizeof(gurenge)/sizeof(int);
   while(1) {
-		osEventFlagsWait(audioFlag, 0x00003, osFlagsNoClear, osWaitForever);
-		sing(gurenge, gurenge_tempo, melody_len, 0x00003);
-		osEventFlagsClear(audioFlag, 0x00003);	
+		osEventFlagsWait(audioFlag, 0x00004, osFlagsNoClear, osWaitForever);
+		sing(gurenge, gurenge_tempo, melody_len, 0x00004);
+		osEventFlagsClear(audioFlag, 0x00004);	
 	}
 }
 
