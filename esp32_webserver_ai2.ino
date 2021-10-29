@@ -169,7 +169,7 @@ void loop() {
     response = "MOVE RIGHT";
     Serial2.write(0x04);
   }
-  if(req.indexOf("forwardLeft") != -1)
+  if(req.indexOf("forwardRight") != -1)
   {
     digitalWrite(output26, HIGH);
     response = "MOVE FORWARD RIGHT";
