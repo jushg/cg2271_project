@@ -39,8 +39,8 @@
 // SOUND
 #define PTB0_Pin 0
 
-#define PTD0_Pin 0
-#define PTD1_Pin 1
+//#define PTD0_Pin 0
+//#define PTD1_Pin 1
 #define DUTY_CYCLE_AUDIO 0.8
 
 #define AUDIO_MOD TPM1_MOD

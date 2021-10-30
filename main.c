@@ -173,7 +173,14 @@ void tSound_ending(void *argument) {
 void tAuto_driving(void *argument) {
   while(1) {
 		osEventFlagsWait(motorFlag, 0x00002, osFlagsNoClear, osWaitForever);
-		
+		forward();
+		osDelay(1000);
+		left();
+		osDelay(500);
+		forward();
+		osDelay(1000);
+		left();
+		osDelay(500);
 		osEventFlagsClear(motorFlag, 0x00002);	
 	}
 }

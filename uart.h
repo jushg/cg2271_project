@@ -4,15 +4,15 @@
 #include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 #include "init.h"
 
-#define UART_RX_PORTE23             23     // UART Receiver
-#define BAUD_RATE                   9600
-#define UART2_INT_PRIO              128    // Interrupt priority
+//#define UART_RX_PORTE23             23     // UART Receiver
+//#define BAUD_RATE                   9600
+//#define UART2_INT_PRIO              128    // Interrupt priority
 
 osMessageQueueId_t uartMsg;
 // Received data from ESP32
 
 
-#define MOVEMENT_BUTTON_MASK(x)     ((x & 0x1E) >> 1)
+//#define MOVEMENT_BUTTON_MASK(x)     ((x & 0x1E) >> 1)
 
 #define UP_BUTTON_PRESSED           0x01
 
@@ -34,7 +34,7 @@ osMessageQueueId_t uartMsg;
 #define THE_END 0xFF
 #define UNIDENTIFIED         0x16
 volatile uint32_t rxData = UNIDENTIFIED;
-#define FINISH_BUTTON_PRESS_MASK(x) ((x & 0x20) >> 5)
+//#define FINISH_BUTTON_PRESS_MASK(x) ((x & 0x20) >> 5)
 
 
 /* Interupt for capturing serial data */
