@@ -4,8 +4,10 @@
 
 osEventFlagsId_t ultrasonicFlag;
 osMessageQueueId_t ultrasonicMsg;
-osMessageQueueId_t selfDriveMsg;
+//osMessageQueueId_t selfDriveMsg;
 osSemaphoreId_t motorSem;
+
+
 /* Delay Function */
 static void delay(volatile uint32_t nof) {
   while(nof!=0) {

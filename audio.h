@@ -103,8 +103,8 @@ void buzz(long frequency, uint32_t length) {
 	if(frequency != 0){
 		mod = CLOCK_FREQ / PRESCALER / frequency;
 	}
-	TPM0_MOD = mod;
-	TPM0_C0V = mod * DUTY_CYCLE_AUDIO; 
+	AUDIO_MOD = mod;
+	AUDIO_FREQ = mod * DUTY_CYCLE_AUDIO; 
 	osDelay(length);
 }
 

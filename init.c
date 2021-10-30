@@ -143,6 +143,7 @@ void initLED(void) {
 }
 
 void initAudio() {
+	/*
 	// Configure Mode 3 for PWM pin operation
 	PORTD->PCR[PTD0_Pin] &= ~PORT_PCR_MUX_MASK;
 	PORTD->PCR[PTD0_Pin] |= PORT_PCR_MUX(4);
@@ -165,6 +166,29 @@ void initAudio() {
 	//enable PWM on TPM0 channel 0 - PTD0
 	TPM0_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
 	TPM0_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
+	*/
+	//enable clock gating for PORTB
+  SIM->SCGC5 |= (SIM_SCGC5_PORTB_MASK);
+
+  // configure mode 3 for the pwm pin operation
+  PORTB->PCR[PTB0_Pin] &= ~PORT_PCR_MUX_MASK;
+  PORTB->PCR[PTB0_Pin] |= PORT_PCR_MUX(3);
+  
+  // enable clock gating for timer1
+  SIM->SCGC6 |= (SIM_SCGC6_TPM1_MASK);
+  
+  // select clock for TPM module
+  SIM->SOPT2 &= ~SIM_SOPT2_TPMSRC_MASK;
+  SIM->SOPT2 |= SIM_SOPT2_TPMSRC(1); //MCGFLLCLK or MCGPLLCLK/2
+  
+  TPM1->MOD = 7500; //when will it overflow
+  
+  TPM1->SC &= ~((TPM_SC_CMOD_MASK) | (TPM_SC_PS_MASK));
+  TPM1->SC |= (TPM_SC_CMOD(1) | TPM_SC_PS(7)); //internal clock and prescaler selection divide by 128
+  TPM1->SC &= ~(TPM_SC_CPWMS_MASK); //up counting mode
+  
+  TPM1_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
+  TPM1_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 }
 
 void initUltrasonic() {
@@ -205,7 +229,7 @@ void initUltrasonic() {
 	NVIC_EnableIRQ(TPM2_IRQn);
 }
 void initMotor() {
-  SIM_SCGC5 |= (SIM_SCGC5_PORTD_MASK | SIM_SCGC5_PORTB_MASK | SIM_SCGC5_PORTC_MASK);
+  SIM_SCGC5 |= (SIM_SCGC5_PORTD_MASK | SIM_SCGC5_PORTB_MASK);
 	
   PORTD->PCR[LEFT_FW] &= ~PORT_PCR_MUX_MASK; 
   PORTD->PCR[LEFT_FW] |= PORT_PCR_MUX(4);
@@ -244,8 +268,8 @@ void initMotor() {
 	TPM0_C3SC &= ~(TPM_CnSC_ELSB_MASK | TPM_CnSC_ELSA_MASK | TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
   TPM0_C3SC |= TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1);    //Toggle output on match
 	
-	TPM0_C0V = 0;
-	TPM0_C1V = 0;
-	TPM0_C2V = 0;
-	TPM0_C3V = 0;
+	LFW = 0;
+	LBK = 0;
+	RFW = 0;
+	RBK = 0;
 }  

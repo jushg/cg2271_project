@@ -118,12 +118,14 @@ void tBrain(void *argument) {
 			rxData = UNIDENTIFIED;
 		}
 		else if (rxData <= 9) {
-			osEventFlagsClear(motorFlag, 0x00002);	
+			osEventFlagsClear(motorFlag, 0x00003); 			
 			osEventFlagsSet(motorFlag, 0x00001);
 			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
 		}
 		else if (rxData == AUTO) {
-			osEventFlagsClear(motorFlag, 0x00001);	
+			osEventFlagsClear(motorFlag, 0x00003); //Clear the last motor option
+			osEventFlagsClear(audioFlag, 0x00007);	//Clear the last audio option
+			
 			osEventFlagsSet(motorFlag, 0x00002);
 			osEventFlagsSet(audioFlag, 0x00002);
 			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
@@ -131,6 +133,7 @@ void tBrain(void *argument) {
 		else if (rxData == THE_END) {
 			stopMotors();
 			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
+			//Play the end song
 			osEventFlagsClear(audioFlag, 0x00007);	
 			osEventFlagsSet(audioFlag, 0x00004);
 		}
@@ -170,6 +173,8 @@ void tSound_ending(void *argument) {
 void tAuto_driving(void *argument) {
   while(1) {
 		osEventFlagsWait(motorFlag, 0x00002, osFlagsNoClear, osWaitForever);
+		
+		osEventFlagsClear(motorFlag, 0x00002);	
 	}
 }
 
@@ -181,9 +186,11 @@ int main (void) {
   SystemCoreClockUpdate();
 	initClockGate();
   initUART2(BAUD_RATE);
-	initPWM();
+	//initPWM();
+	initMotor();
 	initAudio();
 	initLED();
+	initUltrasonic();
 	
 	offGreenLEDs();
 	offRedLEDs();
@@ -194,14 +201,18 @@ int main (void) {
 	audioFlag = osEventFlagsNew(NULL);
 	ledFlag = osEventFlagsNew(NULL);
 	
-	osThreadNew(tMotor,NULL,NULL);
 	osThreadNew(tBrain,NULL,NULL);
+	
+	osThreadNew(tMotor,NULL,NULL);
+	osThreadNew(tAuto_driving,NULL,NULL);
+
 	osThreadNew(tSound_ending,NULL,NULL);
 	osThreadNew(tSound_opening,NULL,NULL);
 	osThreadNew(tSound_running,NULL,NULL);
+	
 	osThreadNew(tLed_green,NULL,NULL);
 	osThreadNew(tLed_red,NULL,NULL);
-	osThreadNew(tAuto_driving,NULL,NULL);
+	
   osKernelStart();                      // Start thread execution
   for (;;) {}
 }
