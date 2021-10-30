@@ -117,12 +117,12 @@ void tBrain(void *argument) {
 			//osEventFlagsSet(audioFlag, 0x00002);
 			rxData = UNIDENTIFIED;
 		}
-		else if (rxData <= 9) {
+		else if (rxData <= 9) { // manually control the motors
 			osEventFlagsClear(motorFlag, 0x00003); 			
 			osEventFlagsSet(motorFlag, 0x00001);
 			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
 		}
-		else if (rxData == AUTO) {
+		else if (rxData == AUTO) { //auto drive
 			osEventFlagsClear(motorFlag, 0x00003); //Clear the last motor option
 			osEventFlagsClear(audioFlag, 0x00007);	//Clear the last audio option
 			
@@ -181,6 +181,8 @@ void tAuto_driving(void *argument) {
 		osDelay(1000);
 		left();
 		osDelay(500);
+		stopMotors();
+		
 		osEventFlagsClear(motorFlag, 0x00002);	
 	}
 }

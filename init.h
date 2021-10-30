@@ -2,7 +2,7 @@
 #define INIT_H
 #include "MKL25Z4.h"                    // Device header
 #include <math.h>
-#include "led.h"
+//#include "led.h"
 #define MASK(x) (1 << (x))
 
 #define CLOCK_FREQ 48000000
@@ -46,7 +46,17 @@
 #define AUDIO_MOD TPM1_MOD
 #define AUDIO_FREQ TPM1_C0V
 
+//LED
+#define GREEN_LED_01 7 // PortC Pin 7
+#define GREEN_LED_02 0 // PortC Pin 0
+#define GREEN_LED_03 3 // PortC Pin 3
+#define GREEN_LED_04 4 // PortC Pin 4 
+#define GREEN_LED_05 5 // PortC Pin 5
+#define GREEN_LED_06 6 // PortC Pin 6
+#define GREEN_LED_07 10  // PortC Pin 10
+#define GREEN_LED_08 11 // PortC Pin 11
 
+#define RED_LED_01 1 // PortA Pin 1
 // ULTRASONIC
 #define PTB1_Pin 1
 #define PTB2_Pin 2
