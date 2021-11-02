@@ -107,14 +107,14 @@ void tBrain(void *argument) {
 		//osMessageQueueGet(uartMsg, &rxData, NULL, osWaitForever);
 		if (rxData == CONNECT) {	
 			//when the ESP restarts
-			osEventFlagsClear(ledFlag, 0x00001);
-			osEventFlagsClear(audioFlag, 0x00007);	
+			//osEventFlagsClear(ledFlag, 0x00001);
+			//osEventFlagsClear(audioFlag, 0x00007);	
 			osEventFlagsSet(audioFlag, 0x00001);	 //Play connected tunes	
 			//Flash 2 times
 			flashGreenLEDs(250);
 			flashGreenLEDs(250);
 			osEventFlagsSet(ledFlag, 0x00001);
-			//osEventFlagsSet(audioFlag, 0x00002);
+			osEventFlagsSet(audioFlag, 0x00002);
 			rxData = UNIDENTIFIED;
 		}
 		else if (rxData <= 9) { // manually control the motors
@@ -196,10 +196,10 @@ int main (void) {
 	initClockGate();
   initUART2(BAUD_RATE);
 	//initPWM();
-	initMotor();
+	//initMotor();
 	initAudio();
 	initLED();
-	initUltrasonic();
+	//initUltrasonic();
 	
 	offGreenLEDs();
 	offRedLEDs();

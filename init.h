@@ -26,10 +26,10 @@
 
 // Defining Motors
 
-#define LEFT_FW 1 // PTB0 TPM1_CH0
-#define LEFT_BK 3 // PTB1 TPM1_CH1
-#define RIGHT_FW 2 // PTB2 TPM2_CH0
-#define RIGHT_BK 0 // PTB3 TPM2_CH1
+#define LEFT_FW 1 // PTD1
+#define LEFT_BK 3 // PTD3
+#define RIGHT_FW 2 // PTB2
+#define RIGHT_BK 0 // PTB0
 
 
 #define UART_RX_PORTE23 23 //PTE 23 RX
