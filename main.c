@@ -11,8 +11,10 @@
 #include "uart.h"
 #include "audio.h"
 #include "led.h"
+#include "sensor.h"
 
 osEventFlagsId_t ledFlag;
+osEventFlagsId_t sensorFlag;
 
 volatile state_t state = START;
 
@@ -128,6 +130,8 @@ void tBrain(void *argument) {
 			
 			osEventFlagsSet(motorFlag, 0x00002);
 			osEventFlagsSet(audioFlag, 0x00002);
+			
+			osEventFlagsSet(ultrasonicFlag, 0x00001);
 			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
 		}
 		else if (rxData == THE_END) {
@@ -174,7 +178,8 @@ void tAuto_driving(void *argument) {
   while(1) {
 		osEventFlagsWait(motorFlag, 0x00002, osFlagsNoClear, osWaitForever);
 		forward();
-		osDelay(1000);
+		//osDelay(1000);
+		osSemaphoreAcquire(autoMoveSem, osWaitForever);
 		left();
 		osDelay(500);
 		forward();
@@ -186,8 +191,6 @@ void tAuto_driving(void *argument) {
 		osEventFlagsClear(motorFlag, 0x00002);	
 	}
 }
-
-
  
 int main (void) {
  
@@ -199,7 +202,7 @@ int main (void) {
 	//initMotor();
 	initAudio();
 	initLED();
-	//initUltrasonic();
+	initUltrasonic();
 	
 	offGreenLEDs();
 	offRedLEDs();
@@ -209,6 +212,9 @@ int main (void) {
 	motorFlag = osEventFlagsNew(NULL);
 	audioFlag = osEventFlagsNew(NULL);
 	ledFlag = osEventFlagsNew(NULL);
+	ultrasonicFlag = osEventFlagsNew(NULL);
+	
+	autoMoveSem = osSemaphoreNew(1, 0, NULL); // Semaphore for auto movement
 	
 	osThreadNew(tBrain,NULL,NULL);
 	
@@ -221,6 +227,9 @@ int main (void) {
 	
 	osThreadNew(tLed_green,NULL,NULL);
 	osThreadNew(tLed_red,NULL,NULL);
+	
+	osThreadNew(ultrasonic_tx_thread, NULL, NULL);
+	osThreadNew(ultrasonic_rx_thread, NULL, NULL);
 	
   osKernelStart();                      // Start thread execution
   for (;;) {}
