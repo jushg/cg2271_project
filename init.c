@@ -80,7 +80,7 @@ void initUART2(uint32_t baud_rate){
 	SIM->SCGC4 |= SIM_SCGC4_UART2_MASK;
 	SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;
 	
-	// Enable UART2 receiver on Port 2 pin 23
+	// Enable UART2 receiver on Port E pin 23
 	PORTE->PCR[UART_RX_PORTE23] &= ~PORT_PCR_MUX_MASK;
 	PORTE->PCR[UART_RX_PORTE23] |= PORT_PCR_MUX(4);
 	
@@ -110,10 +110,6 @@ void initUART2(uint32_t baud_rate){
 
 /* LED GPIO Initialization Function */
 void initLED(void) { 
-	// Enable Clock to PORTS
-	//SIM->SCGC5 |= (SIM_SCGC5_PORTC_MASK);
-	//SIM->SCGC5 |= (SIM_SCGC5_PORTA_MASK);
-	//SIM->SCGC5 |= (SIM_SCGC5_PORTD_MASK);
 	
 	// Configure MUX settings to make all pins GPIO for GREEN_LED
 	PORTC->PCR[GREEN_LED_01] &= ~PORT_PCR_MUX_MASK;
@@ -146,11 +142,6 @@ void initLED(void) {
 
 void initAudio() {
 	
-	//enable clock gating for PORTB
-  //SIM->SCGC5 |= (SIM_SCGC5_PORTB_MASK);
- // enable clock gating for timer1
-  //SIM->SCGC6 |= (SIM_SCGC6_TPM1_MASK);
-	
   // configure mode 3 for the pwm pin operation
   PORTB->PCR[PTB0_Pin] &= ~PORT_PCR_MUX_MASK;
   PORTB->PCR[PTB0_Pin] |= PORT_PCR_MUX(3);
@@ -172,8 +163,6 @@ void initAudio() {
 }
 
 void initUltrasonic() {
-	//SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
-	//SIM->SCGC6 |= (SIM_SCGC6_TPM2_MASK);
 	
 	// Echo Pin Value Reader
 	PORTB->PCR[PTB1_Pin] &= ~PORT_PCR_MUX_MASK;
@@ -209,9 +198,6 @@ void initUltrasonic() {
 	NVIC_EnableIRQ(TPM2_IRQn);
 }
 void initMotor() {
-  //SIM_SCGC5 |= SIM_SCGC5_PORTD_MASK;
-	//SIM_SCGC6 |= SIM_SCGC6_TPM0_MASK;
-	
 	
   PORTD->PCR[LEFT_FW] &= ~PORT_PCR_MUX_MASK; 
   PORTD->PCR[LEFT_FW] |= PORT_PCR_MUX(4);
