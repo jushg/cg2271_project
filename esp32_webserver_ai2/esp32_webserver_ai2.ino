@@ -5,8 +5,8 @@
 #define TXD2 17
 
 // Replace with your network credentials
-const char* ssid = "TTDT";
-const char* password = "dadianhcho";
+const char* ssid = "Free WiFi";
+const char* password = "12345678";
 
 // Set web server port number to 80
 WiFiServer server(80);
@@ -29,7 +29,7 @@ const long timeoutTime = 2000;
 int wait30 = 30000; // time to reconnect when connection is lost.
 
 // This is your Static IP
-IPAddress local_IP(192, 168, 43, 214); 
+IPAddress local_IP(192, 168, 43, 234); 
 // Gateway IP address
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 0, 0);
@@ -99,7 +99,42 @@ void loop() {
   {
     response = "WiFi Connected: " + ip_address;
   }
-
+//  if(req.indexOf("onRed") != -1)
+//  {
+//    digitalWrite(output26, HIGH);
+//    response = "RED LED ON";
+//    Serial2.write(0x31);
+//  }
+//  if(req.indexOf("offRed") != -1)
+//  {
+//    digitalWrite(output26, LOW);
+//    response = "RED LED OFF";
+//    Serial2.write(0x30);
+//  }  
+//  if(req.indexOf("onGreen") != -1)
+//  {
+//    digitalWrite(output26, HIGH);
+//    response = "GREEN LED ON";
+//    Serial2.write(0x33);
+//  }
+//  if(req.indexOf("offGreen") != -1)
+//  {
+//    digitalWrite(output26, LOW);
+//    response = "GREEN LED OFF";
+//    Serial2.write(0x32);
+//  }
+//  if(req.indexOf("onBlue") != -1)
+//  {
+//    digitalWrite(output26, HIGH);
+//    response = "BLUE LED ON";
+//    Serial2.write(0x35);
+//  }
+//  if(req.indexOf("offBlue") != -1)
+//  {
+//    digitalWrite(output26, LOW);
+//    response = "BLUE LED OFF";
+//    Serial2.write(0x34);
+//  }
   /*
        if (req.indexOf("on12") != -1) {digitalWrite(LED12, HIGH); estado = "LED12 ON";}
        if (req.indexOf("off12") != -1){digitalWrite(LED12, LOW); estado = "LED12 OFF";}
@@ -135,6 +170,30 @@ void loop() {
     response = "MOVE RIGHT";
     Serial2.write(0x04);
   }
+  if(req.indexOf("forwardRight") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "MOVE FORWARD RIGHT";
+    Serial2.write(0x05);
+  }
+  if(req.indexOf("backRight") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "MOVE BACKWARD RIGHT";
+    Serial2.write(0x06);
+  }
+  if(req.indexOf("forwardLeft") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "MOVE FORWARD RIGHT";
+    Serial2.write(0x07);
+  }
+  if(req.indexOf("backLeft") != -1)
+  {
+    digitalWrite(output26, HIGH);
+    response = "MOVE RIGHT";
+    Serial2.write(0x08);
+  }
   if(req.indexOf("stop") != -1)
   {
     digitalWrite(output26, LOW);
@@ -145,7 +204,7 @@ void loop() {
   {
     digitalWrite(output26, HIGH);
     response = "START";
-    Serial2.write(0x06);
+    Serial2.write(0x00);
   }
   if(req.indexOf("end") != -1)
   {
