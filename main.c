@@ -134,13 +134,10 @@ void tBrain(void *argument) {
 			
 			osEventFlagsSet(motorFlag, 0x00002);
 			osEventFlagsSet(audioFlag, 0x00002);
-<<<<<<< HEAD
 			
 			osEventFlagsSet(ultrasonicFlag, 0x00001);
-=======
 			rxData = UNIDENTIFIED;
 
->>>>>>> 2943719de6927c225f85020845225286eabc9b4e
 			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
 		}
 		else if (rxData == THE_END) {
@@ -189,12 +186,7 @@ void tAuto_driving(void *argument) {
   while(1) {
 		osEventFlagsWait(motorFlag, 0x00002, osFlagsNoClear, osWaitForever);
 		forward();
-<<<<<<< HEAD
-		//osDelay(1000);
 		osSemaphoreAcquire(autoMoveSem, osWaitForever);
-=======
-		osDelay(500);
->>>>>>> 2943719de6927c225f85020845225286eabc9b4e
 		left();
 		osDelay(500);
 		forward();
@@ -226,14 +218,11 @@ int main (void) {
 	motorFlag = osEventFlagsNew(NULL);
 	audioFlag = osEventFlagsNew(NULL);
 	ledFlag = osEventFlagsNew(NULL);
-<<<<<<< HEAD
 	ultrasonicFlag = osEventFlagsNew(NULL);
 	
 	autoMoveSem = osSemaphoreNew(1, 0, NULL); // Semaphore for auto movement
 	
-=======
 
->>>>>>> 2943719de6927c225f85020845225286eabc9b4e
 	osThreadNew(tBrain,NULL,NULL);
 	
 	osThreadNew(tMotor,NULL,NULL);

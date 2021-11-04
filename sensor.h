@@ -41,7 +41,6 @@ void ultrasonic_rx_thread(void *argument) {
 	}
 }
 
-
 void TPM2_IRQHandler(void) {
 	NVIC_ClearPendingIRQ(TPM2_IRQn);
  	volatile uint32_t timer = 0;
