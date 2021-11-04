@@ -117,6 +117,34 @@ void sing(int melody[], int tempo[], int melody_len, uint32_t flag) {
 		osDelay(pauseBetweenNotes);
 	}
 }
+int connected_melody[] = {
+  NOTE_E6, 0, NOTE_B5, 0
+};
+
+int connected_tempo[] = {
+  12, 12, 12, 12
+};
+
+int birthday[] = {
+NOTE_G6, NOTE_A6, NOTE_G6, NOTE_C6, 
+NOTE_B6, NOTE_G6, 0, NOTE_G6, NOTE_A6, 
+NOTE_G6, NOTE_D6, NOTE_C6, NOTE_G6, 0,
+NOTE_G6, NOTE_G6, NOTE_E6, NOTE_C6, 
+NOTE_C6, NOTE_B6, NOTE_A6, 0, NOTE_F6,
+NOTE_F6, NOTE_E6, NOTE_C6, NOTE_D6, NOTE_C6
+};
+
+int birthday_tempo[] = {
+6,6,6,6,
+6,6,4,6,6,
+6,6,6,6,4,
+6,6,6,6,
+6,6,6,4,6,
+6,6,6,6,6
+};
+
+
+
 
 int gurenge[] = {
 	NOTE_G6,NOTE_FS6,NOTE_G6,0,
@@ -256,13 +284,8 @@ int underworld_tempo[] = {
 };
 
 //Mario main theme melody
-int connected_melody[] = {
-  NOTE_B6, 0, NOTE_A6, 0
-};
 
-int connected_tempo[] = {
-  12, 12, 12, 12
-};
+
 
 
 //Alternatives

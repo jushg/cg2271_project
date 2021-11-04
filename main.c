@@ -32,7 +32,8 @@ void tLed_red(void *argument) {
 		else {
 			flashRedLEDs(500);
 		}
-	}
+
+	}		
 }
 
 /* Green LEDs thread */
@@ -45,7 +46,7 @@ void tLed_green(void *argument) {
 		else {
 			for(int i = 0; i < 8; ++i) {
 				toggleGreenLED(i);
-				osDelay(100);
+				osDelay(500);
 			}
 		}
 	}
@@ -109,8 +110,11 @@ void tBrain(void *argument) {
 		//osMessageQueueGet(uartMsg, &rxData, NULL, osWaitForever);
 		if (rxData == CONNECT) {	
 			//when the ESP restarts
-			//osEventFlagsClear(ledFlag, 0x00001);
-			//osEventFlagsClear(audioFlag, 0x00007);	
+			//Clear all the current flag
+			osEventFlagsClear(ledFlag, 0x00001);
+			osEventFlagsClear(audioFlag, 0x00007);	
+			osEventFlagsClear(motorFlag, 0x00003);
+			
 			osEventFlagsSet(audioFlag, 0x00001);	 //Play connected tunes	
 			//Flash 2 times
 			flashGreenLEDs(250);
@@ -130,8 +134,13 @@ void tBrain(void *argument) {
 			
 			osEventFlagsSet(motorFlag, 0x00002);
 			osEventFlagsSet(audioFlag, 0x00002);
+<<<<<<< HEAD
 			
 			osEventFlagsSet(ultrasonicFlag, 0x00001);
+=======
+			rxData = UNIDENTIFIED;
+
+>>>>>>> 2943719de6927c225f85020845225286eabc9b4e
 			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
 		}
 		else if (rxData == THE_END) {
@@ -151,7 +160,7 @@ void tSound_opening(void *argument) {
 	while(1) {
 		osEventFlagsWait(audioFlag, 0x00001, osFlagsNoClear, osWaitForever);
 		sing(connected_melody, connected_tempo, melody_len, 0x00001);
-		osEventFlagsClear(audioFlag, 0x00001);	
+		osEventFlagsClear(audioFlag, 0x00007);	
 	}
 }
 
@@ -166,11 +175,13 @@ void tSound_running(void *argument) {
 
 /* Thread for playing sound when the robot finishes the challenge run */
 void tSound_ending(void *argument) {
-	int melody_len = sizeof(gurenge)/sizeof(int);
+	//int melody_len = sizeof(gurenge)/sizeof(int);
+	int melody_len = sizeof(birthday)/sizeof(int);
+
   while(1) {
 		osEventFlagsWait(audioFlag, 0x00004, osFlagsNoClear, osWaitForever);
-		sing(gurenge, gurenge_tempo, melody_len, 0x00004);
-		osEventFlagsClear(audioFlag, 0x00004);	
+		sing(birthday, birthday_tempo, melody_len, 0x00004);
+		osEventFlagsClear(audioFlag, 0x00007);	
 	}
 }
 
@@ -178,17 +189,20 @@ void tAuto_driving(void *argument) {
   while(1) {
 		osEventFlagsWait(motorFlag, 0x00002, osFlagsNoClear, osWaitForever);
 		forward();
+<<<<<<< HEAD
 		//osDelay(1000);
 		osSemaphoreAcquire(autoMoveSem, osWaitForever);
+=======
+		osDelay(500);
+>>>>>>> 2943719de6927c225f85020845225286eabc9b4e
 		left();
 		osDelay(500);
 		forward();
-		osDelay(1000);
+		osDelay(500);
 		left();
 		osDelay(500);
 		stopMotors();
-		
-		osEventFlagsClear(motorFlag, 0x00002);	
+		osEventFlagsClear(motorFlag, 0x00003);	
 	}
 }
  
@@ -199,7 +213,7 @@ int main (void) {
 	initClockGate();
   initUART2(BAUD_RATE);
 	//initPWM();
-	//initMotor();
+	initMotor();
 	initAudio();
 	initLED();
 	initUltrasonic();
@@ -212,10 +226,14 @@ int main (void) {
 	motorFlag = osEventFlagsNew(NULL);
 	audioFlag = osEventFlagsNew(NULL);
 	ledFlag = osEventFlagsNew(NULL);
+<<<<<<< HEAD
 	ultrasonicFlag = osEventFlagsNew(NULL);
 	
 	autoMoveSem = osSemaphoreNew(1, 0, NULL); // Semaphore for auto movement
 	
+=======
+
+>>>>>>> 2943719de6927c225f85020845225286eabc9b4e
 	osThreadNew(tBrain,NULL,NULL);
 	
 	osThreadNew(tMotor,NULL,NULL);
