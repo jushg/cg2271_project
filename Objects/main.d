@@ -23,3 +23,5 @@
 .\objects\main.o: F:\RTOS\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h
 .\objects\main.o: sensor.h
 .\objects\main.o: F:\RTOS\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h
+.\objects\main.o: F:\RTOS\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\main.o: F:\RTOS\Keil_v5\ARM\ARMCC\Bin\..\include\inttypes.h

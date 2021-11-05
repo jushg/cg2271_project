@@ -1,6 +1,8 @@
 #include "MKL25Z4.h"
 #include "cmsis_os2.h"       
 #include "init.h"
+#include <stdio.h>
+#include <inttypes.h>
 
 osEventFlagsId_t ultrasonicFlag;
 osMessageQueueId_t ultrasonicMsg;
@@ -18,7 +20,7 @@ static void delay(volatile uint32_t nof) {
 
 void ultrasonic_tx_thread(void *argument) {
 	for (;;) {
-		osEventFlagsWait(ultrasonicFlag, 0x00001, osFlagsNoClear, osWaitForever);
+		//osEventFlagsWait(ultrasonicFlag, 0x00001, osFlagsNoClear, osWaitForever);
 		PTB->PDOR |= MASK(PTB3_Pin);
 		delay(0x11); // 10us pulse to begin ranging
 		PTB->PDOR &= ~MASK(PTB3_Pin);
@@ -31,7 +33,7 @@ void ultrasonic_rx_thread(void *argument) {
 	uint32_t timer=0;
 	uint32_t centimeter=0;
 	for (;;) {
-		osEventFlagsWait(ultrasonicFlag, 0x00001, osFlagsNoClear, osWaitForever);
+		//osEventFlagsWait(ultrasonicFlag, 0x00001, osFlagsNoClear, osWaitForever);
 		osMessageQueueGet(ultrasonicMsg, &timer, NULL, osWaitForever);
 		centimeter = timer / 87; 				// * 10^6 / 58 * 32 / (48 * 10^6)
 		if (centimeter < 30) {

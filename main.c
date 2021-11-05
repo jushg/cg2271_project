@@ -134,8 +134,8 @@ void tBrain(void *argument) {
 			
 			osEventFlagsSet(motorFlag, 0x00002);
 			osEventFlagsSet(audioFlag, 0x00002);
-			
 			osEventFlagsSet(ultrasonicFlag, 0x00001);
+			
 			rxData = UNIDENTIFIED;
 
 			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
@@ -187,13 +187,15 @@ void tAuto_driving(void *argument) {
 		osEventFlagsWait(motorFlag, 0x00002, osFlagsNoClear, osWaitForever);
 		forward();
 		osSemaphoreAcquire(autoMoveSem, osWaitForever);
-		left();
-		osDelay(500);
-		forward();
-		osDelay(500);
-		left();
-		osDelay(500);
+		osEventFlagsClear(ultrasonicFlag, 0x00001);
 		stopMotors();
+		//left();
+		//osDelay(500);
+		//forward();
+		//osDelay(500);
+		//left();
+		//osDelay(500);
+		
 		osEventFlagsClear(motorFlag, 0x00003);	
 	}
 }
@@ -215,6 +217,7 @@ int main (void) {
 	stopMotors();
 
   osKernelInitialize();                 // Initialize CMSIS-RTOS
+	
 	motorFlag = osEventFlagsNew(NULL);
 	audioFlag = osEventFlagsNew(NULL);
 	ledFlag = osEventFlagsNew(NULL);

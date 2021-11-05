@@ -41,9 +41,9 @@ void reverse() {
 	//TPM1_C1V = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
 	//TPM2_C1V = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
 		
-	LFW = 0;
+	//LFW = 0;
 	LBK = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
-	RFW = 0;
+	//RFW = 0;
 	RBK = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
 }
 
@@ -54,10 +54,10 @@ void forward() {
 	//TPM1_C0V = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
 	//TPM2_C0V = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
 		
-	LFW = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
-	LBK = 0;
-	RFW = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
-	RBK = 0;
+	LFW = MAX_DUTY_CYCLE * 0.7;
+	//LBK = 0;
+	RFW = MAX_DUTY_CYCLE * 0.7;
+	//RBK = 0;
 }
 
 /** Rotate Right **/
@@ -67,10 +67,10 @@ void right() {
 	//TPM1_C0V = MAX_DUTY_CYCLE/3;
 	//TPM2_C1V = MAX_DUTY_CYCLE/3;
 		
-	LFW = 0;
-	LBK = MAX_DUTY_CYCLE/3;
-	RFW = MAX_DUTY_CYCLE/3;
-	RBK = 0;
+	//LFW = 0;
+	LBK = MAX_DUTY_CYCLE/2;
+	RFW = MAX_DUTY_CYCLE/2;
+	//RBK = 0;
 }
 
 /** Rotate Left **/
@@ -80,10 +80,10 @@ void left() {
 	//TPM2_C0V = MAX_DUTY_CYCLE/3;
 	//TPM1_C1V = MAX_DUTY_CYCLE/3;
 		
-	LFW = MAX_DUTY_CYCLE/3;
-	LBK = 0;
-	RFW = 0;
-	RBK = MAX_DUTY_CYCLE/3;
+	LFW = MAX_DUTY_CYCLE/2;
+	//LBK = 0;
+	//RFW = 0;
+	RBK = MAX_DUTY_CYCLE/2;
 }
 
 /** Curved Forward Left**/
@@ -94,10 +94,10 @@ void leftforward() {
 	//TPM1_C0V = MAX_DUTY_CYCLE/6;
 	
 		
-	LFW = MAX_DUTY_CYCLE/6;
-	LBK = 0;
-	RFW = MAX_DUTY_CYCLE;
-	RBK = 0;
+	LFW = MAX_DUTY_CYCLE;
+	//LBK = 0;
+	RFW = MAX_DUTY_CYCLE/6;
+	//RBK = 0;
 }
 
 /** Curved Reverse Left**/
@@ -108,10 +108,10 @@ void leftreverse() {
 	//TPM1_C1V = MAX_DUTY_CYCLE/6;	
 	
 		
-	LFW = 0;
-	LBK = MAX_DUTY_CYCLE/6;
-	RFW = 0;
-	RBK = MAX_DUTY_CYCLE;
+	//LFW = 0;
+	LBK = MAX_DUTY_CYCLE;
+	//RFW = 0;
+	RBK = MAX_DUTY_CYCLE/6;
 }
 
 /** Curved Forward Right**/
@@ -122,10 +122,10 @@ void rightforward() {
 	//TPM1_C0V = MAX_DUTY_CYCLE;
 	
 		
-	LFW = MAX_DUTY_CYCLE;
-	LBK = 0;
-	RFW = MAX_DUTY_CYCLE/6;
-	RBK = 0;
+	LFW = MAX_DUTY_CYCLE/6;
+	//LBK = 0;
+	RFW = MAX_DUTY_CYCLE;
+	//RBK = 0;
 }
 
 /** Curved Reverse Right**/
@@ -136,10 +136,8 @@ void rightreverse() {
 	//TPM1_C1V = MAX_DUTY_CYCLE;
 	
 		
-	LFW = 0;
-	LBK = MAX_DUTY_CYCLE;
-	RFW = 0;
-	RBK = MAX_DUTY_CYCLE/6;
+	LBK = MAX_DUTY_CYCLE/6;
+	RBK = MAX_DUTY_CYCLE;
 }
 
 #endif
