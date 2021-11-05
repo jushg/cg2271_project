@@ -56,7 +56,7 @@
 #define GREEN_LED_07 10  // PortC Pin 10
 #define GREEN_LED_08 11 // PortC Pin 11
 
-#define RED_LED_01 1 // PortA Pin 1
+#define RED_LED_01 12 // PortA Pin 12
 // ULTRASONIC
 #define PTB1_Pin 1
 #define PTB2_Pin 2

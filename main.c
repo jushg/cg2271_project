@@ -46,7 +46,7 @@ void tLed_green(void *argument) {
 		else {
 			for(int i = 0; i < 8; ++i) {
 				toggleGreenLED(i);
-				osDelay(500);
+				osDelay(50);
 			}
 		}
 	}
@@ -108,6 +108,7 @@ void tBrain(void *argument) {
 	//uint8_t rxData;
 	while(1) {
 		//osMessageQueueGet(uartMsg, &rxData, NULL, osWaitForever);
+		
 		if (rxData == CONNECT) {	
 			//when the ESP restarts
 			//Clear all the current flag
