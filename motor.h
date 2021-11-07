@@ -4,8 +4,8 @@
 #include <math.h>
 #include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 #include "init.h"
-#define MAX_DUTY_CYCLE 7500 //(50Hz)
 
+#define MAX_DUTY_CYCLE 7500 //(50Hz)
 #define STRAIGHT_SPEED 0.65
 osEventFlagsId_t motorFlag;
 osMessageQueueId_t motorMsg;
@@ -20,124 +20,70 @@ typedef enum state {
 	FINISH
 } state_t;
 
-void stopMotors(){
-	//Stop Left Side
-	//TPM1_C0V = 0; 
-	//TPM1_C1V = 0; 
-	//Stop Right Side
-	//TPM2_C0V = 0; 
-	//TPM2_C1V = 0; 
-		
+state_t state = START;
+
+void stopMotors(){	
 	LFW = 0;
 	LBK = 0;
 	RFW = 0;
 	RBK = 0;
+	state = STOP;
 }
 
 /** Move Reverse **/ 
 void reverse() {
-	//TPM1_C0V = 0;
-	//TPM2_C0V = 0;
-	//TPM1_C1V = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
-	//TPM2_C1V = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
-		
-	//LFW = 0;
 	LBK = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
-	//RFW = 0;
 	RBK = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
+	state = REVERSE;
 }
 
 /** Move Forward **/
 void forward() {
-	//TPM1_C1V = 0;
-	//TPM2_C1V = 0;
-	//TPM1_C0V = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
-	//TPM2_C0V = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
-		
-	LFW = MAX_DUTY_CYCLE * 0.7;
-	//LBK = 0;
-	RFW = MAX_DUTY_CYCLE * 0.7;
-	//RBK = 0;
+	LFW = MAX_DUTY_CYCLE * 0.2;
+	RFW = MAX_DUTY_CYCLE * 0.2;
+	state = FORWARD;
 }
 
 /** Rotate Right **/
 void right() {
-	//TPM1_C1V = 0;
-	//TPM2_C0V = 0;
-	//TPM1_C0V = MAX_DUTY_CYCLE/3;
-	//TPM2_C1V = MAX_DUTY_CYCLE/3;
-		
-	//LFW = 0;
 	LBK = MAX_DUTY_CYCLE/2;
 	RFW = MAX_DUTY_CYCLE/2;
-	//RBK = 0;
+	state = RIGHT;
 }
 
 /** Rotate Left **/
 void left() {
-	//TPM1_C0V = 0;
-	//TPM2_C1V = 0;
-	//TPM2_C0V = MAX_DUTY_CYCLE/3;
-	//TPM1_C1V = MAX_DUTY_CYCLE/3;
-		
 	LFW = MAX_DUTY_CYCLE/2;
-	//LBK = 0;
-	//RFW = 0;
 	RBK = MAX_DUTY_CYCLE/2;
+	state = LEFT;
 }
 
 /** Curved Forward Left**/
 void leftforward() {
-	//TPM1_C1V = 0;
-	//TPM2_C1V = 0;
-	//TPM2_C0V = MAX_DUTY_CYCLE;
-	//TPM1_C0V = MAX_DUTY_CYCLE/6;
-	
-		
 	LFW = MAX_DUTY_CYCLE;
-	//LBK = 0;
 	RFW = MAX_DUTY_CYCLE/6;
-	//RBK = 0;
+	state = FORWARD;
 }
 
 /** Curved Reverse Left**/
 void leftreverse() {
-	//TPM1_C0V = 0;
-	//TPM2_C0V = 0;
-	//TPM2_C1V = MAX_DUTY_CYCLE;
-	//TPM1_C1V = MAX_DUTY_CYCLE/6;	
-	
-		
-	//LFW = 0;
 	LBK = MAX_DUTY_CYCLE;
-	//RFW = 0;
 	RBK = MAX_DUTY_CYCLE/6;
+	state = REVERSE;
 }
 
 /** Curved Forward Right**/
 void rightforward() {
-	//TPM1_C1V = 0;
-	//TPM2_C1V = 0;
-	//TPM2_C0V = MAX_DUTY_CYCLE/6;
-	//TPM1_C0V = MAX_DUTY_CYCLE;
-	
-		
 	LFW = MAX_DUTY_CYCLE/6;
-	//LBK = 0;
 	RFW = MAX_DUTY_CYCLE;
-	//RBK = 0;
+	state = FORWARD;
 }
 
 /** Curved Reverse Right**/
-void rightreverse() {
-	//TPM1_C0V = 0;
-	//TPM2_C0V = 0;
-	//TPM2_C1V = MAX_DUTY_CYCLE/6;
-	//TPM1_C1V = MAX_DUTY_CYCLE;
-	
-		
+void rightreverse() {		
 	LBK = MAX_DUTY_CYCLE/6;
 	RBK = MAX_DUTY_CYCLE;
+	state = REVERSE;
 }
 
 #endif
