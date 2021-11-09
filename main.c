@@ -135,7 +135,7 @@ void tBrain(void *argument) {
 			osEventFlagsSet(audioFlag, 0x00002);
 			
 			rxData = UNIDENTIFIED;
-			osEventFlagsSet(ultrasonicFlag, 0x00001);
+			//osEventFlagsSet(ultrasonicFlag, 0x00001);
 
 			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
 		}
@@ -180,58 +180,100 @@ void tSound_ending(void *argument) {
 }
 
 
-#define STOP_DISTANCE 5000
+#define STOP_DISTANCE 20
 
 void tAuto_driving(void *argument) {
 	uint32_t TURN_DELAY = 380;
 	uint32_t FORWARD_DELAY = 1000;
 	uint32_t STOP_DELAY = 1000;
-	
+	uint32_t timer= 0;
+	uint32_t centimeter;
   while(1) {
-		uint32_t timer=0;
 		osEventFlagsWait(motorFlag, 0x00002, osFlagsNoClear, osWaitForever);
-		uint32_t distanceReading0 = 900;
-		uint32_t distanceReading1 = 900;
-		uint32_t maxDistanceReading = 900;
-		osEventFlagsSet(ultrasonicFlag, 0x00001);
-		forward();
-	
 		
-		osSemaphoreAcquire(autoMoveSem, osWaitForever);
-		/*
-		while (centimeter > 10) {
+		forward();
+		
+		osEventFlagsSet(ultrasonicFlag, 0x00001);
+		osMessageQueueReset(ultrasonicMsg);
+		centimeter = 200;
+		
+		//osSemaphoreAcquire(autoMoveSem, osWaitForever);
+		
+		while (centimeter > STOP_DISTANCE) {
 			//get ultrasonic reading
 			//osMessageQueueReset(ultrasonicMsg);
-			
 			osStatus_t status = osMessageQueueGet(ultrasonicMsg, &timer, NULL, osWaitForever);
-			flashGreenLEDs(200);
 			if (status == osOK) {
-				flashGreenLEDs(100);
 				centimeter = timer / 87; 				// * 10^6 / 58 * 32 / (48 * 10^6)
 			}
 		}
 		osEventFlagsClear(ultrasonicFlag, 0x00001);
-		*/
-		//While not near obstacle
+		
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
 		/*
-		while (maxDistanceReading > STOP_DISTANCE) {
-			//get ultrasonic reading
-			osMessageQueueReset(ultrasonicMsg);
-			osSemaphoreRelease(ultrasonicSemaphore);
-			osStatus_t status = osMessageQueueGet(ultrasonicMsg, &timer, 0, 35);
-			if (status == osOK) {
-				flashGreenLEDs(200);
-				distanceReading1 = distanceReading0;
-				distanceReading0 = timer;
-				maxDistanceReading = distanceReading0 > distanceReading1 ? distanceReading0 : distanceReading1;
-			}
-			if(maxDistanceReading <= STOP_DISTANCE) {
-			}
-		}
-		*/
+		left();
+		osDelay(TURN_DELAY);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		forward();
 		osDelay(FORWARD_DELAY);
 		stopMotors();
 		osDelay(STOP_DELAY);
+		
+		right();
+		osDelay(TURN_DELAY*2);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		forward();
+		osDelay(FORWARD_DELAY);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
+		right();
+		osDelay(TURN_DELAY*2);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		forward();
+		osDelay(FORWARD_DELAY);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
+		right();
+		osDelay(TURN_DELAY*2);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		forward();
+		osDelay(FORWARD_DELAY);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
+		left();
+		osDelay(TURN_DELAY);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
+		//Finish the loop, return back
+		
+		forward();
+		
+		
+		osEventFlagsSet(ultrasonicFlag, 0x00001);
+		osMessageQueueReset(ultrasonicMsg);
+		centimeter = 200;
+		
+		while (centimeter > STOP_DISTANCE) {
+			//get ultrasonic reading
+			osStatus_t status = osMessageQueueGet(ultrasonicMsg, &timer, NULL, osWaitForever);
+			if (status == osOK) {
+				centimeter = timer / 87; 				// * 10^6 / 58 * 32 / (48 * 10^6)
+			}
+		}
+		osEventFlagsClear(ultrasonicFlag, 0x00001);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		*/
 		osEventFlagsClear(motorFlag, 0x00003);	
 	}
 }
@@ -245,8 +287,7 @@ int main (void) {
 	initMotor();
 	initAudio();
 	initLED();
-	//initUltrasonic(); //Tan
-	initUltrasonicPWM(); //wenfeng
+	initUltrasonicPWM(); 
 	
 	offGreenLEDs();
 	offRedLEDs();
@@ -259,33 +300,26 @@ int main (void) {
 	ledFlag = osEventFlagsNew(NULL);
 	ultrasonicFlag = osEventFlagsNew(NULL);
 	
-	autoMoveSem = osSemaphoreNew(1, 0, NULL); // Semaphore for auto movement
-	
-	ultrasonicSemaphore = osSemaphoreNew(1, 0, NULL);
 
-	ultrasonicMsg = osMessageQueueNew(32, sizeof(uint32_t), NULL);
+	ultrasonicMsg = osMessageQueueNew(4, sizeof(uint32_t), NULL);
 	
 	motorMsg = osMessageQueueNew(4, sizeof(uint8_t), NULL);
 	uartMsg = osMessageQueueNew(32, sizeof(uint8_t), NULL);
 
-	//osThreadNew(tBrain,NULL,NULL);
+	osThreadNew(tBrain,NULL,NULL);
 	
-	//osThreadNew(tMotor,NULL,NULL);
-	//osThreadNew(tAuto_driving,NULL,NULL);
+	osThreadNew(tMotor,NULL,NULL);
+	osThreadNew(tAuto_driving,NULL,NULL);
 
-	//osThreadNew(tSound_ending,NULL,NULL);
-	//osThreadNew(tSound_opening,NULL,NULL);
-	osThreadNew(tSound_running,NULL,NULL);
+  //osThreadNew(tSound_ending,NULL,NULL);
+	osThreadNew(tSound_opening,NULL,NULL);
+	//osThreadNew(tSound_running,NULL,NULL);
 	
-	//osThreadNew(tLed_green,NULL,NULL);
-	//osThreadNew(tLed_red,NULL,NULL);
+	osThreadNew(tLed_green,NULL,NULL);
+	osThreadNew(tLed_red,NULL,NULL);
 	
-	//Wenfeng
-	osThreadNew(ultrasonic_tx_thread, NULL, NULL);
-	osThreadNew(ultrasonic_rx_thread, NULL, NULL);
+	osThreadNew(tUltrasonic_trigger, NULL, NULL);
 	
-	//Tan
-	//osThreadNew(tUltrasonic, NULL, NULL);
 
   osKernelStart();                      // Start thread execution
   for (;;) {}

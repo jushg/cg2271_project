@@ -6,7 +6,7 @@
 #include "init.h"
 
 #define MAX_DUTY_CYCLE 7500 //(50Hz)
-#define STRAIGHT_SPEED 0.65
+#define STRAIGHT_SPEED 0.3
 osEventFlagsId_t motorFlag;
 osMessageQueueId_t motorMsg;
 
@@ -39,8 +39,8 @@ void reverse() {
 
 /** Move Forward **/
 void forward() {
-	LFW = MAX_DUTY_CYCLE * 0.2;
-	RFW = MAX_DUTY_CYCLE * 0.2;
+	LFW = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
+	RFW = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
 	state = FORWARD;
 }
 
