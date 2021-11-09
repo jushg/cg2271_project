@@ -1,10 +1,7 @@
 #ifndef AUDIO_H_
 #define AUDIO_H_
-#include "MKL25Z4.h"                    // Device header
-#include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 #include "init.h"
-
-osEventFlagsId_t audioFlag;
+#include "util.h"
 
 #define NOTE_B0  31
 #define NOTE_C1  33

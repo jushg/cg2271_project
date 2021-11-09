@@ -2,20 +2,25 @@
  * CMSIS-RTOS 'main' function template
  *---------------------------------------------------------------------------*/
  
-#include "RTE_Components.h"
-#include  CMSIS_device_header
-#include "cmsis_os2.h"
-#include "MKL25Z4.h"                    // Device header
 #include "init.h"
 #include "motor.h"
 #include "uart.h"
 #include "audio.h"
 #include "led.h"
 #include "sensor.h"
+#include "util.h"
 
 osEventFlagsId_t ledFlag;
 osEventFlagsId_t sensorFlag;
+osEventFlagsId_t motorFlag;
+osEventFlagsId_t audioFlag;
+osEventFlagsId_t ultrasonicFlag;
 
+osMessageQueueId_t motorMsg;
+osMessageQueueId_t uartMsg;
+osMessageQueueId_t ultrasonicMsg;
+
+state_t state ;
 
  /*----------------------------------------------------------------------------
  * Application main threads
@@ -59,43 +64,30 @@ void tMotor(void *argument) {
 		osMessageQueueGet(motorMsg, &data, NULL, osWaitForever);
 		if(data == UP_BUTTON_PRESSED ) {
 			forward();
-			//state = FORWARD;
 		}
 		else if(data == DOWN_BUTTON_PRESSED) {
 			reverse();
-			//state = REVERSE;
 		}
 		else if(data == LEFT_BUTTON_PRESSED) {
 			left();
-			//state = LEFT;
 		}
 		else if(data == RIGHT_BUTTON_PRESSED) {
 			right();
-			//state = RIGHT;
 		}
 		else if(data == RIGHT_FORWARD_BUTTON_PRESSED) {
 			rightforward();
-			//state = FORWARD;
 		}
 		else if(data == RIGHT_REVERSE_BUTTON_PRESSED) {
 			rightreverse();
-			//state = REVERSE;
 		}
 		else if(data == LEFT_FORWARD_BUTTON_PRESSED) {
 			leftforward();
-			//state = FORWARD;
 		}
 		else if(data == LEFT_REVERSE_BUTTON_PRESSED) {
 			leftreverse();
-			//state = REVERSE;
 		}
 		else if (data == ALL_BUTTON_RELEASED) { 
 			stopMotors();
-			//state = STOP;
-		}
-		else if (data == THE_END) {
-			stopMotors();
-			//state = FINISH;
 		}
 	}
 }
@@ -106,9 +98,9 @@ void tBrain(void *argument) {
 	uint8_t rxData;
 	while(1) {
 		osMessageQueueGet(uartMsg, &rxData, NULL, osWaitForever);
-		
 		if (rxData == CONNECT) {	
 			//when the ESP restarts
+			
 			//Clear all the current flag
 			osEventFlagsClear(ledFlag, 0x00001);
 			osEventFlagsClear(audioFlag, 0x00007);	
@@ -118,9 +110,10 @@ void tBrain(void *argument) {
 			//Flash 2 times
 			flashGreenLEDs(250);
 			flashGreenLEDs(250);
+			
 			osEventFlagsSet(ledFlag, 0x00001);
 			osEventFlagsSet(audioFlag, 0x00002);
-			rxData = UNIDENTIFIED;
+			
 		}
 		else if (rxData <= 9) { // manually control the motors
 			osEventFlagsClear(motorFlag, 0x00003); 			
@@ -133,15 +126,9 @@ void tBrain(void *argument) {
 			
 			osEventFlagsSet(motorFlag, 0x00002);
 			osEventFlagsSet(audioFlag, 0x00002);
-			
-			rxData = UNIDENTIFIED;
-			//osEventFlagsSet(ultrasonicFlag, 0x00001);
-
-			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
 		}
 		else if (rxData == THE_END) {
 			stopMotors();
-			//osMessageQueuePut(motorMsg, &rxData, NULL, 0);
 			//Play the end song
 			osEventFlagsClear(audioFlag, 0x00007);	
 			osEventFlagsSet(audioFlag, 0x00004);
@@ -179,13 +166,24 @@ void tSound_ending(void *argument) {
 	}
 }
 
+void tUltrasonic_trigger(void *argument) {
+	for (;;) {
+		//Run the trigger
+		osEventFlagsWait(ultrasonicFlag, 0x00001, osFlagsNoClear, osWaitForever);
+		PTB->PDOR |= MASK(PTB3_Pin);
+		delay(0x11); // 10us pulse to begin ranging
+		PTB->PDOR &= ~MASK(PTB3_Pin);
+		delay(0x18e70); // 60ms
+		osDelay(1);
+	}
+}
 
 #define STOP_DISTANCE 30
+#define TURN_DELAY 280
+#define FORWARD_DELAY 350
+#define STOP_DELAY 500
 
 void tAuto_driving(void *argument) {
-	uint32_t TURN_DELAY = 280;
-	uint32_t FORWARD_DELAY = 350;
-	uint32_t STOP_DELAY = 500;
 	uint32_t timer= 0;
 	uint32_t centimeter;
   while(1) {
@@ -280,12 +278,13 @@ int main (void) {
  
   // System Initialization
   SystemCoreClockUpdate();
+	
 	initClockGate();
   initUART2(BAUD_RATE);
 	initMotor();
 	initAudio();
 	initLED();
-	initUltrasonicPWM(); 
+	initUltrasonic(); 
 	
 	offGreenLEDs();
 	offRedLEDs();
@@ -293,28 +292,34 @@ int main (void) {
 
   osKernelInitialize();                 // Initialize CMSIS-RTOS
 	
+	//Event flags
 	motorFlag = osEventFlagsNew(NULL);
 	audioFlag = osEventFlagsNew(NULL);
 	ledFlag = osEventFlagsNew(NULL);
 	ultrasonicFlag = osEventFlagsNew(NULL);
 	
+	//Queues
 	ultrasonicMsg = osMessageQueueNew(4, sizeof(uint32_t), NULL);
-	
 	motorMsg = osMessageQueueNew(4, sizeof(uint8_t), NULL);
-	uartMsg = osMessageQueueNew(32, sizeof(uint8_t), NULL);
+	uartMsg = osMessageQueueNew(2, sizeof(uint8_t), NULL);
 
+	//Main thread
 	osThreadNew(tBrain,NULL,NULL);
 	
+	//Driving threads
 	osThreadNew(tMotor,NULL,NULL);
 	osThreadNew(tAuto_driving,NULL,NULL);
 
+	//Sound threads
   osThreadNew(tSound_ending,NULL,NULL);
 	osThreadNew(tSound_opening,NULL,NULL);
 	osThreadNew(tSound_running,NULL,NULL);
 	
+	//LED threads
 	osThreadNew(tLed_green,NULL,NULL);
 	osThreadNew(tLed_red,NULL,NULL);
 	
+	//Ultrasonic thread
 	osThreadNew(tUltrasonic_trigger, NULL, NULL);
 	
   osKernelStart();                      // Start thread execution
