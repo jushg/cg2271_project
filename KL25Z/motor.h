@@ -39,8 +39,8 @@ void reverse() {
 
 /** Move Forward **/
 void forward() {
-	LFW = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
-	RFW = MAX_DUTY_CYCLE * STRAIGHT_SPEED;
+	LFW = MAX_DUTY_CYCLE * 0.70;
+	RFW = MAX_DUTY_CYCLE * 0.55;
 	state = FORWARD;
 }
 
