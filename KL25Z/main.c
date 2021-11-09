@@ -30,7 +30,7 @@ state_t state ;
 void tLed_red(void *argument) {    
 	while(1) {
 		osEventFlagsWait(ledFlag, 0x00001, osFlagsNoClear, osWaitForever);
-		if(state == STOP || state == START || state == FINISH) {
+		if(state == STOP ) {
 			flashRedLEDs(250);
 		}
 		else {
@@ -48,10 +48,9 @@ void tLed_green(void *argument) {
 			allGreenLightUp();
 		}
 		else {
-			for(int i = 0; i < 8; ++i) {
-				toggleGreenLED(i);
-				osDelay(250);
-			}
+			toggleNumber = toggleNumber >= 8 ? 0: toggleNumber;
+			toggleGreenLED(toggleNumber);
+			osDelay(250);
 		}
 	}
 }
@@ -208,57 +207,58 @@ void tAuto_driving(void *argument) {
 		stopMotors();
 		osDelay(STOP_DELAY);
 		
-		
-		left();
-		osDelay(TURN_DELAY);
-		stopMotors();
-		osDelay(STOP_DELAY);
-		forward();
-		osDelay(FORWARD_DELAY);
-		stopMotors();
-		osDelay(STOP_DELAY);
-		
-		right();
-		osDelay(TURN_DELAY*2);
-		stopMotors();
-		osDelay(STOP_DELAY);
-		forward();
-		osDelay(FORWARD_DELAY);
-		stopMotors();
-		osDelay(STOP_DELAY);
-		
-		right();
-		osDelay(TURN_DELAY*2);
-		stopMotors();
-		osDelay(STOP_DELAY);
-		forward();
-		osDelay(FORWARD_DELAY);
-		stopMotors();
-		osDelay(STOP_DELAY);
-		
-		right();
-		osDelay(TURN_DELAY*2);
-		stopMotors();
-		osDelay(STOP_DELAY);
-		forward();
-		osDelay(FORWARD_DELAY);
-		stopMotors();
-		osDelay(STOP_DELAY);
-		
+		//Move into the loop
 		left();
 		osDelay(TURN_DELAY);
 		stopMotors();
 		osDelay(STOP_DELAY);
 		
+		forward();
+		osDelay(FORWARD_DELAY);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
+		right();
+		osDelay(TURN_DELAY*2);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
+		forward();
+		osDelay(FORWARD_DELAY);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
+		right();
+		osDelay(TURN_DELAY*2);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
+		forward();
+		osDelay(FORWARD_DELAY);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
+		right();
+		osDelay(TURN_DELAY*2);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
+		forward();
+		osDelay(FORWARD_DELAY);
+		stopMotors();
+		osDelay(STOP_DELAY);
+		
+		left();
+		osDelay(TURN_DELAY);
+		stopMotors();
+		osDelay(STOP_DELAY);
 		//Finish the loop, return back
 		
 		forward();
 		
-		
 		osEventFlagsSet(ultrasonicFlag, 0x00001);
 		osMessageQueueReset(ultrasonicMsg);
 		centimeter = 200;
-		
 		while (centimeter > STOP_DISTANCE) {
 			//get ultrasonic reading
 			osStatus_t status = osMessageQueueGet(ultrasonicMsg, &timer, NULL, osWaitForever);
@@ -267,6 +267,8 @@ void tAuto_driving(void *argument) {
 			}
 		}
 		osEventFlagsClear(ultrasonicFlag, 0x00001);
+		
+		
 		stopMotors();
 		osDelay(STOP_DELAY);
 		
