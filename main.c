@@ -108,6 +108,10 @@ void tBrain(void *argument) {
 	//uint8_t rxData;
 	while(1) {
 		//osMessageQueueGet(uartMsg, &rxData, NULL, osWaitForever);
+		left();
+		osDelay(500);
+		right();
+		osDelay(500);
 		if (rxData == CONNECT) {	
 			//when the ESP restarts
 			//Clear all the current flag

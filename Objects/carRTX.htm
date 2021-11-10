@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\carRTX.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\carRTX.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Nov 05 09:57:20 2021
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Nov 10 13:29:02 2021
 <BR><P>
 <H3>Maximum Stack Usage =        224 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -285,7 +285,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[b4]"></a>__aeabi_memcpy4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memcpya.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toggleGreenLED
+<BR><BR>[Called By]<UL><LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toggleGreenLED
 </UL>
 
 <P><STRONG><a name="[bc]"></a>__aeabi_memcpy8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memcpya.o(.text), UNUSED)
@@ -425,6 +425,7 @@ Global Symbols
 <LI><a href="#[4a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ultrasonic_tx_thread
 <LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ultrasonic_rx_thread
 <LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tLed_green
+<LI><a href="#[42]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBrain
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sing
 <LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buzz
 </UL>
@@ -899,8 +900,9 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[ae]"></a>left</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(i.left))
+<P><STRONG><a name="[ac]"></a>left</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(i.left))
 <BR><BR>[Called By]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tMotor
+<LI><a href="#[42]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBrain
 </UL>
 
 <P><STRONG><a name="[b2]"></a>leftforward</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, main.o(i.leftforward))
@@ -933,7 +935,7 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
 <P><STRONG><a name="[98]"></a>offGreenLEDs</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, led.o(i.offGreenLEDs))
-<BR><BR>[Called By]<UL><LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toggleGreenLED
+<BR><BR>[Called By]<UL><LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toggleGreenLED
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flashGreenLEDs
 <LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -956,12 +958,13 @@ Global Symbols
 <P><STRONG><a name="[34]"></a>osRtxIdleThread</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, rtx_config.o(i.osRtxIdleThread))
 <BR>[Address Reference Count : 1]<UL><LI> rtx_thread.o(.text.osRtxThreadStartup)
 </UL>
-<P><STRONG><a name="[ad]"></a>reverse</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(i.reverse))
+<P><STRONG><a name="[af]"></a>reverse</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(i.reverse))
 <BR><BR>[Called By]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tMotor
 </UL>
 
-<P><STRONG><a name="[af]"></a>right</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(i.right))
+<P><STRONG><a name="[ad]"></a>right</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(i.right))
 <BR><BR>[Called By]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tMotor
+<LI><a href="#[42]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBrain
 </UL>
 
 <P><STRONG><a name="[b0]"></a>rightforward</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, main.o(i.rightforward))
@@ -1006,20 +1009,23 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
-<P><STRONG><a name="[42]"></a>tBrain</STRONG> (Thumb, 220 bytes, Stack size 0 bytes, main.o(i.tBrain))
+<P><STRONG><a name="[42]"></a>tBrain</STRONG> (Thumb, 244 bytes, Stack size 0 bytes, main.o(i.tBrain))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = tBrain &rArr; osEventFlagsSet &rArr; osRtxPostProcess &rArr; osRtxErrorNotify &rArr; __ARM_common_switch8
 </UL>
 <BR>[Calls]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osEventFlagsSet
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osEventFlagsClear
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flashGreenLEDs
 <LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stopMotors
+<LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;right
+<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;left
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
 <P><STRONG><a name="[48]"></a>tLed_green</STRONG> (Thumb, 74 bytes, Stack size 0 bytes, main.o(i.tLed_green))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = tLed_green &rArr; toggleGreenLED
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toggleGreenLED
+<BR>[Calls]<UL><LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toggleGreenLED
 <LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osEventFlagsWait
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 <LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;allGreenLightUp
@@ -1041,11 +1047,11 @@ Global Symbols
 <LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stopMotors
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rightreverse
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rightforward
-<LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;right
-<LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;reverse
+<LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;right
+<LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;reverse
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;leftreverse
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;leftforward
-<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;left
+<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;left
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;forward
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
@@ -1076,7 +1082,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
-<P><STRONG><a name="[ac]"></a>toggleGreenLED</STRONG> (Thumb, 34 bytes, Stack size 40 bytes, led.o(i.toggleGreenLED))
+<P><STRONG><a name="[ae]"></a>toggleGreenLED</STRONG> (Thumb, 34 bytes, Stack size 40 bytes, led.o(i.toggleGreenLED))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = toggleGreenLED
 </UL>
 <BR>[Calls]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;offGreenLEDs
