@@ -22,6 +22,10 @@
 .\objects\main.o: led.h
 .\objects\main.o: C:\Users\User\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h
 .\objects\main.o: sensor.h
+<<<<<<< HEAD:Objects/main.d
 .\objects\main.o: C:\Users\User\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\inttypes.h
+=======
+.\objects\main.o: F:\RTOS\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h
+>>>>>>> 09cbc42d379043d334de8017dfef722f06e9166b:KL25Z/Objects/main.d

@@ -15,63 +15,6 @@ void initClockGate() {
 }
 
 
-/* INITIALISE PWM PINS*/
-void initPWM() {
-	//Enable Clock Gating for PORTB
-  //SIM_SCGC5 |= SIM_SCGC5_PORTB_MASK;
-	// Configure Mode 3 for PWM pin operation
-	// TPM1_CH0
-	PORTB->PCR[LEFT_FW] &= ~PORT_PCR_MUX_MASK;
-	PORTB->PCR[LEFT_FW] |= PORT_PCR_MUX(3);
-	// TPM1_CH1
-	PORTB->PCR[LEFT_BK] &= ~PORT_PCR_MUX_MASK;
-	PORTB->PCR[LEFT_BK] |= PORT_PCR_MUX(3);
-	
-	// TPM1_CH0
-	PORTB->PCR[RIGHT_FW] &= ~PORT_PCR_MUX_MASK;
-	PORTB->PCR[RIGHT_FW] |= PORT_PCR_MUX(3);
-	// TPM2_CH1
-	PORTB->PCR[RIGHT_BK] &= ~PORT_PCR_MUX_MASK;
-	PORTB->PCR[RIGHT_BK] |= PORT_PCR_MUX(3);
-	
-	// Enable Clock gating for Timer 1 and Timer 2
-	SIM->SCGC6 |= (SIM_SCGC6_TPM1_MASK | SIM_SCGC6_TPM2_MASK);
-	
-	//Select clock for TPM module
-	SIM->SOPT2 &= ~SIM_SOPT2_TPMSRC_MASK;
-	SIM->SOPT2 |= SIM_SOPT2_TPMSRC(1); //MCGFLLCLK OR MCGPLLCLK/2
-	
-	//set modulo value 48000000/128 = 375000, 375000Hz/50Hz = 7500	
-	TPM1->MOD = 7500;
-	TPM2->MOD = 7500;
-	
-	//Edge-Aligned PWM
-	//CMOD - 1 and PS - 111 (128)
-	TPM1_SC &= ~((TPM_SC_CMOD_MASK) | (TPM_SC_PS_MASK));
-	TPM1_SC |= (TPM_SC_CMOD(1) | TPM_SC_PS(7)); //CMOD = 1 => LPTPM counter increments on every LPTPM counter clock
-	TPM1_SC &= ~(TPM_SC_CPWMS_MASK); //count up by default (0)
-  
-	TPM2_SC &= ~((TPM_SC_CMOD_MASK) | (TPM_SC_PS_MASK));
-	TPM2_SC |= (TPM_SC_CMOD(1) | TPM_SC_PS(7)); //CMOD = 1 => LPTPM counter increments on every LPTPM counter clock
-	TPM2_SC &= ~(TPM_SC_CPWMS_MASK); //count up by default (0)
-	
-	//enable PWM on TPM1 channel 0 - PTB0
-	TPM1_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
-	TPM1_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
-	
-	//enable PWM on TPM1 channel 1 - PTB1
-	TPM1_C1SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
-	TPM1_C1SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
-	
-	//enable PWM on TPM2 channel 0 - PTB0
-	TPM2_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
-	TPM2_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
-	
-	//enable PWM on TPM2 channel 1 - PTB1
-	TPM2_C1SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
-	TPM2_C1SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
-}
-
 /*	Init UART2	*/
 void initUART2(uint32_t baud_rate){
 	uint32_t divisor, bus_clock;
@@ -146,8 +89,6 @@ void initAudio() {
   PORTB->PCR[PTB0_Pin] &= ~PORT_PCR_MUX_MASK;
   PORTB->PCR[PTB0_Pin] |= PORT_PCR_MUX(3);
   
- 
-  
   // select clock for TPM module
   SIM->SOPT2 &= ~SIM_SOPT2_TPMSRC_MASK;
   SIM->SOPT2 |= SIM_SOPT2_TPMSRC(1); //MCGFLLCLK or MCGPLLCLK/2
@@ -162,41 +103,7 @@ void initAudio() {
   TPM1_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 }
 
-void initUltrasonic() {
-	
-	// Echo Pin Value Reader
-	PORTB->PCR[PTB1_Pin] &= ~PORT_PCR_MUX_MASK;
-  PORTB->PCR[PTB1_Pin] |= PORT_PCR_MUX(1);
-		
-	// Echo Pin Input Capture Timer
-  PORTB->PCR[PTB2_Pin] &= ~PORT_PCR_MUX_MASK;
-  PORTB->PCR[PTB2_Pin] |= PORT_PCR_MUX(3);
-	
-	// Trig Pin
-	PORTB->PCR[PTB3_Pin] &= ~PORT_PCR_MUX_MASK;
-  PORTB->PCR[PTB3_Pin] |= PORT_PCR_MUX(1);
-	
-	PTB->PDDR &= ~MASK(PTB1_Pin);
-	PTB->PDDR |= MASK(PTB3_Pin);
-	
-	// select clock for TPM module
-  SIM->SOPT2 &= ~SIM_SOPT2_TPMSRC_MASK;
-  SIM->SOPT2 |= SIM_SOPT2_TPMSRC(1); //MCGFLLCLK or MCGPLLCLK/2
-  
-  TPM2->MOD = 60000; //when will it overflow
-  
-  TPM2->SC &= ~((TPM_SC_CMOD_MASK) | (TPM_SC_PS_MASK));
 
-  TPM2->SC |= (TPM_SC_CMOD(1) | TPM_SC_PS(5)); //internal clock and prescaler selection divide by 32
-  TPM2->SC &= ~(TPM_SC_CPWMS_MASK); //up counting mode
-  
-  TPM2_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK) | (TPM_CnSC_CHIE_MASK));
-  TPM2_C0SC |= (TPM_CnSC_ELSA(1) | TPM_CnSC_ELSB(1) | TPM_CnSC_CHIE(1));  // 
-	
-	NVIC_SetPriority(TPM2_IRQn,2);
-	NVIC_ClearPendingIRQ(TPM2_IRQn);
-	NVIC_EnableIRQ(TPM2_IRQn);
-}
 void initMotor() {
 	
   PORTD->PCR[LEFT_FW] &= ~PORT_PCR_MUX_MASK; 
@@ -238,3 +145,41 @@ void initMotor() {
 	RFW = 0;
 	RBK = 0;
 }  
+
+void initUltrasonicPWM() {
+	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
+	SIM->SCGC6 |= (SIM_SCGC6_TPM2_MASK);
+	
+	// Echo Pin Value Reader
+	PORTB->PCR[PTB1_Pin] &= ~PORT_PCR_MUX_MASK;
+  PORTB->PCR[PTB1_Pin] |= PORT_PCR_MUX(1);
+		
+	// Echo Pin Input Capture Timer
+  PORTB->PCR[PTB2_Pin] &= ~PORT_PCR_MUX_MASK;
+  PORTB->PCR[PTB2_Pin] |= PORT_PCR_MUX(3);
+	
+	// Trig Pin
+	PORTB->PCR[PTB3_Pin] &= ~PORT_PCR_MUX_MASK;
+  PORTB->PCR[PTB3_Pin] |= PORT_PCR_MUX(1);
+	
+	PTB->PDDR &= ~MASK(PTB1_Pin);
+	PTB->PDDR |= MASK(PTB3_Pin);
+	
+	// select clock for TPM module
+  SIM->SOPT2 &= ~SIM_SOPT2_TPMSRC_MASK;
+  SIM->SOPT2 |= SIM_SOPT2_TPMSRC(1); //MCGFLLCLK or MCGPLLCLK/2
+  
+  TPM2->MOD = 60000; //when will it overflow
+  
+  TPM2->SC &= ~((TPM_SC_CMOD_MASK) | (TPM_SC_PS_MASK));
+
+  TPM2->SC |= (TPM_SC_CMOD(1) | TPM_SC_PS(5)); //internal clock and prescaler selection divide by 32
+  TPM2->SC &= ~(TPM_SC_CPWMS_MASK); //up counting mode
+  
+  TPM2_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK) | (TPM_CnSC_CHIE_MASK));
+  TPM2_C0SC |= (TPM_CnSC_ELSA(1) | TPM_CnSC_ELSB(1) | TPM_CnSC_CHIE(1));  // 
+	
+	NVIC_SetPriority(TPM2_IRQn,2);
+	NVIC_ClearPendingIRQ(TPM2_IRQn);
+	NVIC_EnableIRQ(TPM2_IRQn);
+}

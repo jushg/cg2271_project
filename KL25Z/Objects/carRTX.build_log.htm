@@ -21,6 +21,7 @@ Target DLL:      CMSIS_AGDI.dll V1.32.0.0
 Dialog DLL:      TARMCM1.DLL V1.14.1.0
  
 <h2>Project:</h2>
+<<<<<<< HEAD:Objects/carRTX.build_log.htm
 C:\Users\User\Documents\NUS\CG2271\CG2271 Project Code\carRTX.uvprojx
 Project File Date:  11/10/2021
 
@@ -30,16 +31,38 @@ Build target 'Target 1'
 assembling startup_MKL25Z4.s...
 compiling RTX_Config.c...
 compiling rtx_lib.c...
+=======
+F:\Independent_Projects\cg2271_proj\KL25Z\carRTX.uvprojx
+Project File Date:  11/04/2021
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'F:\RTOS\Keil_v5\ARM\ARMCC\Bin'
+Rebuild target 'Target 1'
+assembling startup_MKL25Z4.s...
+compiling rtx_lib.c...
+compiling RTX_Config.c...
+>>>>>>> 09cbc42d379043d334de8017dfef722f06e9166b:KL25Z/Objects/carRTX.build_log.htm
 compiling system_MKL25Z4.c...
 compiling led.c...
 compiling init.c...
 compiling main.c...
+<<<<<<< HEAD:Objects/carRTX.build_log.htm
 sensor.h(56): warning:  #167-D: argument of type "volatile uint32_t *" is incompatible with parameter of type "const void *"
   		osMessageQueuePut(ultrasonicMsg, &timer, NULL, 0);     //put current counter value into message queue
 main.c: 1 warning, 0 errors
 linking...
 Program Size: Code=11500 RO-data=528 RW-data=8184 ZI-data=264  
 ".\Objects\carRTX.axf" - 0 Error(s), 1 Warning(s).
+=======
+sensor.h(38): warning:  #167-D: argument of type "volatile uint32_t *" is incompatible with parameter of type "const void *"
+  		osMessageQueuePut(ultrasonicMsg, &timer, NULL, 0);
+main.c(39): warning:  #177-D: variable "toggleNumber"  was declared but never referenced
+  	int toggleNumber = 0;
+main.c: 2 warnings, 0 errors
+linking...
+Program Size: Code=11596 RO-data=528 RW-data=7752 ZI-data=264  
+".\Objects\carRTX.axf" - 0 Error(s), 2 Warning(s).
+>>>>>>> 09cbc42d379043d334de8017dfef722f06e9166b:KL25Z/Objects/carRTX.build_log.htm
 
 <h2>Software Packages used:</h2>
 
@@ -74,6 +97,7 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.3.0
 
    * Component: ARM::CMSIS:RTOS2:Keil RTX5:Library:5.5.1
+<<<<<<< HEAD:Objects/carRTX.build_log.htm
       Source file:   CMSIS\RTOS2\RTX\Config\RTX_Config.c
       Source file:   CMSIS\RTOS2\RTX\Template\main.c
       Source file:   CMSIS\RTOS2\RTX\Template\Events.c
@@ -88,6 +112,22 @@ Package Vendor: Keil
       Include file:  CMSIS\RTOS2\RTX\Include\rtx_os.h
       Source file:   CMSIS\RTOS2\RTX\Template\MemPool.c
       Source file:   CMSIS\RTOS2\RTX\Template\svc_user.c
+=======
+      Library file:  CMSIS\RTOS2\RTX\Library\ARM\RTX_CM0.lib
+      Source file:   CMSIS\RTOS2\RTX\Source\rtx_lib.c
+      Source file:   CMSIS\RTOS2\RTX\Template\Mutex.c
+      Source file:   CMSIS\RTOS2\RTX\Template\Timer.c
+      Include file:  CMSIS\RTOS2\RTX\Include\rtx_os.h
+      Source file:   CMSIS\RTOS2\RTX\Config\RTX_Config.c
+      Source file:   CMSIS\RTOS2\RTX\Template\main.c
+      Source file:   CMSIS\RTOS2\RTX\Template\MsgQueue.c
+      Source file:   CMSIS\RTOS2\RTX\Template\svc_user.c
+      Source file:   CMSIS\RTOS2\RTX\Template\MemPool.c
+      Source file:   CMSIS\RTOS2\RTX\Template\Semaphore.c
+      Source file:   CMSIS\RTOS2\RTX\Template\Events.c
+      Include file:  CMSIS\RTOS2\RTX\Config\RTX_Config.h
+      Source file:   CMSIS\RTOS2\RTX\Template\Thread.c
+>>>>>>> 09cbc42d379043d334de8017dfef722f06e9166b:KL25Z/Objects/carRTX.build_log.htm
 
    * Component: Keil::Device:Startup:2.5.0
       Include file:  Device\Source\system_MKL25Z4.h
