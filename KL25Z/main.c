@@ -10,6 +10,13 @@
 #include "sensor.h"
 #include "util.h"
 
+
+const osThreadAttr_t brainPriority = {
+		.priority = osPriorityHigh4
+};
+const osThreadAttr_t motorPriority = {
+		.priority = osPriorityAboveNormal
+};
 osEventFlagsId_t ledFlag;
 osEventFlagsId_t sensorFlag;
 osEventFlagsId_t motorFlag;
@@ -177,10 +184,10 @@ void tUltrasonic_trigger(void *argument) {
 	}
 }
 
-#define STOP_DISTANCE 30
-#define TURN_DELAY 280
-#define FORWARD_DELAY 350
-#define STOP_DELAY 500
+#define STOP_DISTANCE 40
+#define TURN_DELAY 380
+#define FORWARD_DELAY 450
+#define STOP_DELAY 400
 
 void tAuto_driving(void *argument) {
 	uint32_t timer= 0;
@@ -193,8 +200,6 @@ void tAuto_driving(void *argument) {
 		osEventFlagsSet(ultrasonicFlag, 0x00001);
 		osMessageQueueReset(ultrasonicMsg);
 		centimeter = 200;
-		
-		
 		while (centimeter > STOP_DISTANCE) {
 			//get ultrasonic reading
 			osStatus_t status = osMessageQueueGet(ultrasonicMsg, &timer, NULL, osWaitForever);
@@ -219,7 +224,7 @@ void tAuto_driving(void *argument) {
 		osDelay(STOP_DELAY);
 		
 		right();
-		osDelay(TURN_DELAY*2);
+		osDelay(TURN_DELAY*1.6);
 		stopMotors();
 		osDelay(STOP_DELAY);
 		
@@ -229,7 +234,7 @@ void tAuto_driving(void *argument) {
 		osDelay(STOP_DELAY);
 		
 		right();
-		osDelay(TURN_DELAY*2);
+		osDelay(TURN_DELAY*1.6);
 		stopMotors();
 		osDelay(STOP_DELAY);
 		
@@ -239,7 +244,7 @@ void tAuto_driving(void *argument) {
 		osDelay(STOP_DELAY);
 		
 		right();
-		osDelay(TURN_DELAY*2);
+		osDelay(TURN_DELAY*1.6);
 		stopMotors();
 		osDelay(STOP_DELAY);
 		
@@ -249,7 +254,7 @@ void tAuto_driving(void *argument) {
 		osDelay(STOP_DELAY);
 		
 		left();
-		osDelay(TURN_DELAY);
+		osDelay(TURN_DELAY*1.05);
 		stopMotors();
 		osDelay(STOP_DELAY);
 		//Finish the loop, return back
@@ -267,7 +272,6 @@ void tAuto_driving(void *argument) {
 			}
 		}
 		osEventFlagsClear(ultrasonicFlag, 0x00001);
-		
 		
 		stopMotors();
 		osDelay(STOP_DELAY);
@@ -303,19 +307,19 @@ int main (void) {
 	//Queues
 	ultrasonicMsg = osMessageQueueNew(4, sizeof(uint32_t), NULL);
 	motorMsg = osMessageQueueNew(4, sizeof(uint8_t), NULL);
-	uartMsg = osMessageQueueNew(2, sizeof(uint8_t), NULL);
+	uartMsg = osMessageQueueNew(10, sizeof(uint8_t), NULL);
 
 	//Main thread
-	osThreadNew(tBrain,NULL,NULL);
+	osThreadNew(tBrain,NULL, &brainPriority);
 	
 	//Driving threads
-	osThreadNew(tMotor,NULL,NULL);
-	osThreadNew(tAuto_driving,NULL,NULL);
+	osThreadNew(tMotor,NULL,&motorPriority);
+	osThreadNew(tAuto_driving,NULL,&motorPriority);
 
 	//Sound threads
-  osThreadNew(tSound_ending,NULL,NULL);
+  //osThreadNew(tSound_ending,NULL,NULL);
 	osThreadNew(tSound_opening,NULL,NULL);
-	osThreadNew(tSound_running,NULL,NULL);
+	//osThreadNew(tSound_running,NULL,NULL);
 	
 	//LED threads
 	osThreadNew(tLed_green,NULL,NULL);

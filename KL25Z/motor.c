@@ -21,14 +21,14 @@ void forward() {
 }
 
 void right() {
-	LBK = LEFT_POWER * (2/5);
-	RFW = RIGHT_POWER* (2/5);
+	LBK = LEFT_POWER * 0.6 ;
+	RFW = RIGHT_POWER * 0.6;
 	state = RIGHT;
 }
 
 void left() {
-	LFW = LEFT_POWER * (2/5);
-	RBK = RIGHT_POWER* (2/5);
+	LFW = LEFT_POWER * 0.6;
+	RBK = RIGHT_POWER * 0.6;
 	state = LEFT;
 }
 
