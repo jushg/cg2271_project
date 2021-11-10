@@ -146,7 +146,7 @@ void initMotor() {
 	RBK = 0;
 }  
 
-void initUltrasonicPWM() {
+void initUltrasonic() {
 	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
 	SIM->SCGC6 |= (SIM_SCGC6_TPM2_MASK);
 	

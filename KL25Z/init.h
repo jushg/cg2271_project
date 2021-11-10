@@ -1,7 +1,8 @@
 #ifndef INIT_H
 #define INIT_H
-#include "MKL25Z4.h"                    // Device header
-#include <math.h>
+
+#include "util.h"
+
 #define MASK(x) (1 << (x))
 
 #define CLOCK_FREQ 48000000
@@ -17,6 +18,7 @@
 #define LEFT_BK 3 // PTD3
 #define RIGHT_FW 2 // PTB2
 #define RIGHT_BK 0 // PTB0
+
 
 #define LFW TPM0_C1V
 #define LBK TPM0_C3V
@@ -48,24 +50,21 @@
 #define RED_LED_01 12 // PortA Pin 12
 
 // ULTRASONIC
-#define PTB1_Pin 1
-#define PTB2_Pin 2
-#define PTB3_Pin 3
+#define PTB1_Pin 1 //Echo 1
+#define PTB2_Pin 2 //Echo 2
+#define PTB3_Pin 3 //Trigger 1
 
 // MISCELLANEOUS MACROS
 
 #define CLEAR_IRQ 0xffffffff
 #define INIT_VAR 0xFE
-//#define RESET 0x00
 
 
 void initClockGate(void);
-//void initPWM(void);
 void initUART2(uint32_t);
 void initLED(void);
 void initAudio(void);
-void initUltrasonic(void);
 void initMotor(void);
-void initUltrasonicPWM(void);
+void initUltrasonic(void);
 
 #endif

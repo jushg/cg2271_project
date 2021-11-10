@@ -388,6 +388,11 @@
               <FilePath>.\main.c</FilePath>
             </File>
             <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\motor.c</FilePath>
+            </File>
+            <File>
               <FileName>motor.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\motor.h</FilePath>
@@ -408,11 +413,6 @@
               <FilePath>.\uart.h</FilePath>
             </File>
             <File>
-              <FileName>audio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\audio.h</FilePath>
-            </File>
-            <File>
               <FileName>led.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\led.h</FilePath>
@@ -423,9 +423,19 @@
               <FilePath>.\led.c</FilePath>
             </File>
             <File>
+              <FileName>audio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\audio.h</FilePath>
+            </File>
+            <File>
               <FileName>sensor.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\sensor.h</FilePath>
+            </File>
+            <File>
+              <FileName>util.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\util.h</FilePath>
             </File>
           </Files>
         </Group>

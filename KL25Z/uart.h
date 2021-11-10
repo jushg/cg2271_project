@@ -1,8 +1,7 @@
 #ifndef UART_H_
 #define UART_H_
-#include "MKL25Z4.h" 
-#include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 #include "init.h"
+#include "util.h"
 
 #define UP_BUTTON_PRESSED           0x01
 #define DOWN_BUTTON_PRESSED         0x02
@@ -20,9 +19,6 @@
 #define CONNECT 0x00
 #define THE_END 0xFF
 #define UNIDENTIFIED         0x16
-
-osMessageQueueId_t uartMsg;
-
 
 /* Interupt for capturing serial data */
 void UART2_IRQHandler(void) {
