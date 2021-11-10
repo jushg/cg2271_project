@@ -58,6 +58,7 @@ void tLed_green(void *argument) {
 			toggleNumber = toggleNumber >= 8 ? 0: toggleNumber;
 			toggleGreenLED(toggleNumber);
 			osDelay(250);
+			toggleNumber++;
 		}
 	}
 }
