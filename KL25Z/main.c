@@ -185,8 +185,8 @@ void tUltrasonic_trigger(void *argument) {
 	}
 }
 
-#define STOP_DISTANCE 40
-#define TURN_DELAY 380
+#define STOP_DISTANCE 50
+#define TURN_DELAY 390
 #define FORWARD_DELAY 450
 #define STOP_DELAY 400
 
@@ -255,7 +255,7 @@ void tAuto_driving(void *argument) {
 		osDelay(STOP_DELAY);
 		
 		left();
-		osDelay(TURN_DELAY*1.05);
+		osDelay(TURN_DELAY);
 		stopMotors();
 		osDelay(STOP_DELAY);
 		//Finish the loop, return back
@@ -318,9 +318,9 @@ int main (void) {
 	osThreadNew(tAuto_driving,NULL,&motorPriority);
 
 	//Sound threads
-  //osThreadNew(tSound_ending,NULL,NULL);
+  osThreadNew(tSound_ending,NULL,NULL);
 	osThreadNew(tSound_opening,NULL,NULL);
-	//osThreadNew(tSound_running,NULL,NULL);
+	osThreadNew(tSound_running,NULL,NULL);
 	
 	//LED threads
 	osThreadNew(tLed_green,NULL,NULL);

@@ -34,24 +34,24 @@ void left() {
 
 void leftforward() {
 	LFW = LEFT_POWER;
-	RFW = RIGHT_POWER/6;
+	RFW = RIGHT_POWER/9;
 	state = FORWARD;
 }
 
 void leftreverse() {
 	LBK = LEFT_POWER;
-	RBK = RIGHT_POWER/6;
+	RBK = RIGHT_POWER/9;
 	state = REVERSE;
 }
 
 void rightforward() {
-	LFW = LEFT_POWER/6;
+	LFW = LEFT_POWER/9;
 	RFW = RIGHT_POWER;
 	state = FORWARD;
 }
 
 void rightreverse() {		
-	LBK = LEFT_POWER/6;
+	LBK = LEFT_POWER/9;
 	RBK = RIGHT_POWER;
 	state = REVERSE;
 }

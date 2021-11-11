@@ -5,10 +5,10 @@
 
 #define DUTY_CYCLE 7500 //(50Hz)
 
-#define LEFT_POWER DUTY_CYCLE * 0.78
+#define LEFT_POWER DUTY_CYCLE * 0.855
 #define RIGHT_POWER DUTY_CYCLE * 1
 
-#define STRAIGHT_SPEED 0.65
+#define STRAIGHT_SPEED 0.7
 void stopMotors(void);
 void reverse(void) ;
 void forward(void) ;
