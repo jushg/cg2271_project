@@ -10,13 +10,13 @@
 #include "sensor.h"
 #include "util.h"
 
-
 const osThreadAttr_t brainPriority = {
 		.priority = osPriorityHigh4
 };
 const osThreadAttr_t motorPriority = {
 		.priority = osPriorityAboveNormal
 };
+
 osEventFlagsId_t ledFlag;
 osEventFlagsId_t sensorFlag;
 osEventFlagsId_t motorFlag;
@@ -69,28 +69,33 @@ void tMotor(void *argument) {
 	while(1) {
 		osEventFlagsWait(motorFlag, 0x00001, osFlagsNoClear, osWaitForever);
 		osMessageQueueGet(motorMsg, &data, NULL, osWaitForever);
-		if(data == UP_BUTTON_PRESSED ) {
+		if(data == UP_BUTTON) {
 			forward();
 		}
-		else if(data == DOWN_BUTTON_PRESSED) {
+		else if(data == DOWN_BUTTON) {
 			reverse();
 		}
-		else if(data == LEFT_BUTTON_PRESSED) {
+		else if(data == LEFT_BUTTON) {
 			left();
+			osDelay(150);
+			stopMotors();
+			
 		}
-		else if(data == RIGHT_BUTTON_PRESSED) {
+		else if(data == RIGHT_BUTTON) {
 			right();
+			osDelay(150);
+			stopMotors();
 		}
-		else if(data == RIGHT_FORWARD_BUTTON_PRESSED) {
+		else if(data == RIGHT_FORWARD_BUTTON) {
 			rightforward();
 		}
-		else if(data == RIGHT_REVERSE_BUTTON_PRESSED) {
+		else if(data == RIGHT_REVERSE_BUTTON) {
 			rightreverse();
 		}
-		else if(data == LEFT_FORWARD_BUTTON_PRESSED) {
+		else if(data == LEFT_FORWARD_BUTTON) {
 			leftforward();
 		}
-		else if(data == LEFT_REVERSE_BUTTON_PRESSED) {
+		else if(data == LEFT_REVERSE_BUTTON) {
 			leftreverse();
 		}
 		else if (data == ALL_BUTTON_RELEASED) { 
@@ -105,36 +110,40 @@ void tBrain(void *argument) {
 	uint8_t rxData;
 	while(1) {
 		osMessageQueueGet(uartMsg, &rxData, NULL, osWaitForever);
-		if (rxData == CONNECT) {	
-			//when the ESP restarts
-			
+		if (rxData == CONNECTED_SIGNAL) {	//when the ESP restarts/initially connected
 			//Clear all the current flag
 			osEventFlagsClear(ledFlag, 0x00001);
 			osEventFlagsClear(audioFlag, 0x00007);	
 			osEventFlagsClear(motorFlag, 0x00003);
-			
-			osEventFlagsSet(audioFlag, 0x00001);	 //Play connected tunes	
-			//Flash 2 times
+
+			//Play connected tunes	
+			osEventFlagsSet(audioFlag, 0x00001);	 
+			//Flash Green LEDs 2 times
 			flashGreenLEDs(250);
 			flashGreenLEDs(250);
-			
+
+			//Set flag for running audio and LED threads 
 			osEventFlagsSet(ledFlag, 0x00001);
 			osEventFlagsSet(audioFlag, 0x00002);
-			
 		}
 		else if (rxData <= 9) { // manually control the motors
+			//Clear the previous motor flag
 			osEventFlagsClear(motorFlag, 0x00003); 			
+			
+			//Set manual mode
 			osEventFlagsSet(motorFlag, 0x00001);
 			osMessageQueuePut(motorMsg, &rxData, NULL, 0);
 		}
-		else if (rxData == AUTO) { //auto drive
-			osEventFlagsClear(motorFlag, 0x00003); //Clear the last motor option
-			osEventFlagsClear(audioFlag, 0x00007);	//Clear the last audio option
+		else if (rxData == AUTO_BUTTON) { //auto drive mode
+			//Clear the previous motor and audio flags
+			osEventFlagsClear(motorFlag, 0x00003); 
+			osEventFlagsClear(audioFlag, 0x00007);	
 			
+			//Set auto mode
 			osEventFlagsSet(motorFlag, 0x00002);
 			osEventFlagsSet(audioFlag, 0x00002);
 		}
-		else if (rxData == THE_END) {
+		else if (rxData == END_BUTTON) { // the end tune play
 			stopMotors();
 			//Play the end song
 			osEventFlagsClear(audioFlag, 0x00007);	
@@ -173,6 +182,7 @@ void tSound_ending(void *argument) {
 	}
 }
 
+/* Thread for the trigger pin of the ultrasonic sensor */
 void tUltrasonic_trigger(void *argument) {
 	for (;;) {
 		//Run the trigger
@@ -186,10 +196,11 @@ void tUltrasonic_trigger(void *argument) {
 }
 
 #define STOP_DISTANCE 50
-#define TURN_DELAY 390
-#define FORWARD_DELAY 450
-#define STOP_DELAY 400
+#define TURN_DELAY 200
+#define FORWARD_DELAY 300
+#define STOP_DELAY 100
 
+/* Thread for the automatic mode of the robot */
 void tAuto_driving(void *argument) {
 	uint32_t timer= 0;
 	uint32_t centimeter;
@@ -198,6 +209,7 @@ void tAuto_driving(void *argument) {
 		
 		forward();
 		
+		//Move until find the obstacle
 		osEventFlagsSet(ultrasonicFlag, 0x00001);
 		osMessageQueueReset(ultrasonicMsg);
 		centimeter = 200;
@@ -225,7 +237,7 @@ void tAuto_driving(void *argument) {
 		osDelay(STOP_DELAY);
 		
 		right();
-		osDelay(TURN_DELAY*1.6);
+		osDelay(TURN_DELAY*2.1);
 		stopMotors();
 		osDelay(STOP_DELAY);
 		
@@ -235,7 +247,7 @@ void tAuto_driving(void *argument) {
 		osDelay(STOP_DELAY);
 		
 		right();
-		osDelay(TURN_DELAY*1.6);
+		osDelay(TURN_DELAY*2.25);
 		stopMotors();
 		osDelay(STOP_DELAY);
 		
@@ -245,12 +257,12 @@ void tAuto_driving(void *argument) {
 		osDelay(STOP_DELAY);
 		
 		right();
-		osDelay(TURN_DELAY*1.6);
+		osDelay(TURN_DELAY*2.05);
 		stopMotors();
 		osDelay(STOP_DELAY);
 		
 		forward();
-		osDelay(FORWARD_DELAY);
+		osDelay(FORWARD_DELAY*0.95);
 		stopMotors();
 		osDelay(STOP_DELAY);
 		
@@ -258,10 +270,11 @@ void tAuto_driving(void *argument) {
 		osDelay(TURN_DELAY);
 		stopMotors();
 		osDelay(STOP_DELAY);
-		//Finish the loop, return back
 		
+		//Finish the loop, return back
 		forward();
 		
+		//Move until detect the stop obstacle
 		osEventFlagsSet(ultrasonicFlag, 0x00001);
 		osMessageQueueReset(ultrasonicMsg);
 		centimeter = 200;
@@ -273,10 +286,8 @@ void tAuto_driving(void *argument) {
 			}
 		}
 		osEventFlagsClear(ultrasonicFlag, 0x00001);
-		
 		stopMotors();
 		osDelay(STOP_DELAY);
-		
 		osEventFlagsClear(motorFlag, 0x00003);	
 	}
 }
@@ -286,6 +297,7 @@ int main (void) {
   // System Initialization
   SystemCoreClockUpdate();
 	
+	//Ports Initialization
 	initClockGate();
   initUART2(BAUD_RATE);
 	initMotor();
@@ -293,6 +305,7 @@ int main (void) {
 	initLED();
 	initUltrasonic(); 
 	
+	//Initial setup to stabilize the robot
 	offGreenLEDs();
 	offRedLEDs();
 	stopMotors();

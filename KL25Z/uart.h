@@ -3,21 +3,21 @@
 #include "init.h"
 #include "util.h"
 
-#define UP_BUTTON_PRESSED           0x01
-#define DOWN_BUTTON_PRESSED         0x02
-#define LEFT_BUTTON_PRESSED         0x03
-#define RIGHT_BUTTON_PRESSED        0x04
 
-#define RIGHT_FORWARD_BUTTON_PRESSED        0x05
-#define RIGHT_REVERSE_BUTTON_PRESSED        0x06
-#define LEFT_FORWARD_BUTTON_PRESSED         0x07
-#define LEFT_REVERSE_BUTTON_PRESSED         0x08
+//MOVEMENT DECODE MACROS
+#define UP_BUTTON           		0x01
+#define DOWN_BUTTON         		0x02
+#define LEFT_BUTTON         		0x03
+#define RIGHT_BUTTON        		0x04
+#define RIGHT_FORWARD_BUTTON    0x05
+#define RIGHT_REVERSE_BUTTON    0x06
+#define LEFT_FORWARD_BUTTON     0x07
+#define LEFT_REVERSE_BUTTON     0x08
+#define ALL_BUTTON_RELEASED             0x09
+#define AUTO_BUTTON                            0x10
 
-#define ALL_BUTTON_RELEASED         0x09
-#define AUTO         0x10
-
-#define CONNECT 0x00
-#define THE_END 0xFF
+#define CONNECTED_SIGNAL 0x00
+#define END_BUTTON 0xFF
 #define UNIDENTIFIED         0x16
 
 /* Interupt for capturing serial data */

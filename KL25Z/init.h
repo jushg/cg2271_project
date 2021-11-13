@@ -5,6 +5,7 @@
 
 #define MASK(x) (1 << (x))
 
+// SYSTEM MACROS
 #define CLOCK_FREQ 48000000
 #define PRESCALER  128
 #define PRESCALER_US 1
@@ -12,20 +13,18 @@
 #define FREQ_US 1000000
 
 
-// Defining Motors
-
+// MOTORS
 #define LEFT_FW 1 // PTD1
 #define LEFT_BK 3 // PTD3
 #define RIGHT_FW 2 // PTB2
 #define RIGHT_BK 0 // PTB0
-
 
 #define LFW TPM0_C1V
 #define LBK TPM0_C3V
 #define RFW TPM0_C2V
 #define RBK TPM0_C0V
 
-
+// UART
 #define UART_RX_PORTE23 23 //PTE 23 RX
 #define BAUD_RATE 9600
 #define UART2_INT_PRIO 128	
@@ -55,11 +54,10 @@
 #define PTB3_Pin 3 //Trigger 1
 
 // MISCELLANEOUS MACROS
-
 #define CLEAR_IRQ 0xffffffff
 #define INIT_VAR 0xFE
 
-
+// INIT FUNCTIONS
 void initClockGate(void);
 void initUART2(uint32_t);
 void initLED(void);

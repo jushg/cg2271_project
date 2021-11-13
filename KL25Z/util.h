@@ -17,13 +17,17 @@ typedef enum state {
 	FINISH
 } state_t;
 
+//Current state of the car
 extern state_t state ;
+
+/* Event Flags */
 extern osEventFlagsId_t ledFlag;
 extern osEventFlagsId_t sensorFlag;
 extern osEventFlagsId_t motorFlag;
 extern osEventFlagsId_t audioFlag;
 extern osEventFlagsId_t ultrasonicFlag;
 
+/* Queues for threads */
 extern osMessageQueueId_t motorMsg;
 extern osMessageQueueId_t uartMsg;
 extern osMessageQueueId_t ultrasonicMsg;

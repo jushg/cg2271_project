@@ -1,3 +1,6 @@
+/*----------------------------------------------------------------------------
+ * LED CONTROL FUNCTIONS
+ *---------------------------------------------------------------------------*/
 #include "led.h"
 
 void offGreenLEDs() {
@@ -8,6 +11,14 @@ void offGreenLEDs() {
 void allGreenLightUp() {
 		PTC->PDOR = (MASK(GREEN_LED_01) | MASK(GREEN_LED_02) | MASK(GREEN_LED_03) | MASK(GREEN_LED_04) 
 	| MASK(GREEN_LED_05) | MASK(GREEN_LED_06) | MASK(GREEN_LED_07) | MASK(GREEN_LED_08));
+}
+
+void allRedLightUp() {
+		PTA->PDOR = MASK(RED_LED_01);
+}
+
+void offRedLEDs() {
+		PTA->PDOR = ~MASK(RED_LED_01);
 }
 
 void flashGreenLEDs(int time){
@@ -22,14 +33,6 @@ void flashRedLEDs(int time){
 		osDelay(time);
 		offRedLEDs();
 		osDelay(time);
-}
-
-void allRedLightUp() {
-		PTA->PDOR = MASK(RED_LED_01);
-}
-
-void offRedLEDs() {
-		PTA->PDOR = ~MASK(RED_LED_01);
 }
 
 void toggleGreenLED(int greenLEDCounter) {	
