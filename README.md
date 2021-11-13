@@ -17,8 +17,4 @@ National University of Singapore__
 * Using ultrasonic sensor to detect the obstacle.
 * Turns are hardcoded due to time constraint.
 
-### Notes: 
- * Casualties during the development process: 
-    * 1 KL25Z Board: Fried due to overheating.
-    * 2 ESP32: Fried because of inappropriate voltage supplied.
-    * 1 Ultrasonic sensor HC-SR04: Broken cause the robot hit the wall.
+
