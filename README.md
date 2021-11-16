@@ -1,7 +1,8 @@
 # CG2271 Real-Time Operating Systems - Project
 
 __AY2021/2022 Semester 1<br>
-National University of Singapore__
+National University of Singapore<br>
+Watch our journey [here](https://www.youtube.com/watch?v=h36ciY7MfG4)__
 
 ## Description
 
